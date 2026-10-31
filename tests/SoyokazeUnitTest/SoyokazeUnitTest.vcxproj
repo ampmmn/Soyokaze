@@ -46,6 +46,8 @@
     <ClCompile Include="..\testcode\soyokaze\app\CommandLineProcessorTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\BreadCrumbsTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\CandidateListTest.cpp" />
+    <ClCompile Include="..\testcode\soyokaze\CandidateListCtrlTest.cpp" />
+    <ClCompile Include="..\testcode\soyokaze\mainwindow\PreviewLayoutTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\control\CustomColorSchemeTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\control\SystemColorSchemeTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\core\LauncherProcessContextTest.cpp" />
@@ -54,6 +56,7 @@
     <ClCompile Include="..\testcode\soyokaze\settingwindow\AppSettingPageBGImageTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\activate_window\WindowActivateCommandParamTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\align_window\AlignWindowCommandParamTest.cpp" />
+    <ClCompile Include="..\testcode\soyokaze\commands\alias\AliasCommandTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\common\ExpandFunctionsTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\common\SubProcessTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\processproxy\NormalPriviledgeProcessProxyTest.cpp" />

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "commands/common/AdhocCommandBase.h"
-#include "commands/core/SelectionBehavior.h"
+#include "commands/core/PreviewProvider.h"
 #include <memory>
 
 namespace launcherapp {
@@ -10,7 +10,7 @@ namespace clipboardhistory {
 
 class ClipboardHistoryCommand :
 	virtual	public launcherapp::commands::common::AdhocCommandBase,
-	virtual public launcherapp::core::SelectionBehavior
+	virtual public launcherapp::core::PreviewProvider
 {
 public:
 	ClipboardHistoryCommand(const CString& prefix, uint64_t appendData, const CString& data);
@@ -22,15 +22,8 @@ public:
 	HICON GetIcon() override;
 	launcherapp::core::Command* Clone() override;
 
-// SelectionBehavior
-	// 選択された
-	void OnSelect(Command* prior) override;
-	// 選択解除された
-	void OnUnselect(Command* next) override;
-	// 実行後のウインドウを閉じる方法を決定する
-	CloseWindowPolicy GetCloseWindowPolicy(uint32_t modifierMask) override;
-	// 選択時に入力欄に設定するキーワードとキャレットを設定する
-	bool CompleteKeyword(CString& keyword, int& startPos, int& endPos) override;
+// PreviewProvider
+	launcherapp::mainwindow::preview::PreviewWindow* FetchPreviewWindow() override;
 
 // UnknownIF
 	bool QueryInterface(const launcherapp::core::IFID& ifid, void** cmd) override;

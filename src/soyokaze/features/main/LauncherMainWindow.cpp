@@ -49,6 +49,10 @@
 #include "macros/core/MacroRepository.h"
 #include "matcher/CommandToken.h"
 #include "features/main/CandidateList.h"
+#include "commands/core/PreviewProvider.h"
+#include "core/IFIDDefine.h"
+#include "features/main/preview/PreviewHostWindow.h"
+#include "features/main/preview/PreviewWindow.h"
 #include <algorithm>
 #include <thread>
 #include <map>
@@ -112,6 +116,10 @@ struct LauncherMainWindow::PImpl
 	GuideCtrl mGuideCtrl;
 	// 説明欄
 	DescriptionCtrl mDescriptionCtrl;
+	// コマンドのプレビューを表示する親ウインドウ
+	std::unique_ptr<launcherapp::mainwindow::preview::PreviewHostWindow> mPreviewHostWindow;
+	// 現在のプレビューを提供するコマンドを生存させる
+	RefPtr<launcherapp::core::PreviewProvider> mPreviewProvider;
 
 // ウインドウ状態管理
 	// 位置・サイズ・コンポーネントの配置を管理するクラス
@@ -215,6 +223,11 @@ LauncherMainWindow::LauncherMainWindow(CWnd* pParent /*=nullptr*/)
 
 LauncherMainWindow::~LauncherMainWindow()
 {
+	if (in->mPreviewHostWindow) {
+		in->mPreviewHostWindow->AttachPreviewWindow(nullptr);
+		in->mPreviewHostWindow->ShowPreview(false);
+	}
+	in->mPreviewProvider.reset();
 	in->mExtraCandidateListBox.HidePopup();
 	in->mActionHandlerRegistry.Finalize(&in->mCandidates);
 	in->mCandidates.RemoveListener(&in->mCandidateListBox);
@@ -1229,6 +1242,11 @@ CandidateListCtrl* LauncherMainWindow::GetCandidateList()
 	return &in->mCandidateListBox;
 }
 
+launcherapp::mainwindow::preview::PreviewHostWindow* LauncherMainWindow::GetPreviewHostWindow()
+{
+	return in->mPreviewHostWindow.get();
+}
+
 CFont* LauncherMainWindow::GetMainWindowFont()
 {
 	return in->mAppearance->GetFont();
@@ -1427,6 +1445,7 @@ void LauncherMainWindow::ClearContentImpl(bool isForceUpdate)
 	in->mIconLabel.DrawDefaultIcon();
 	in->mInput.Clear();
 	in->mCandidates.Clear();
+	UpdatePreviewWindow();
 
 	// 入力欄と候補を空にした状態をレイアウトへ通知し、表示サイズを更新する
 	struct LocalInputStatus : public LauncherInput {
@@ -1514,6 +1533,47 @@ Command*
 LauncherMainWindow::GetCurrentCommand()
 {
 	return in->mCandidates.GetCurrentCommand();
+}
+
+void LauncherMainWindow::UpdatePreviewWindow()
+{
+	auto command = GetCurrentCommand();
+	RefPtr<launcherapp::core::PreviewProvider> provider;
+	launcherapp::mainwindow::preview::PreviewWindow* previewWindow = nullptr;
+	if (command && command->QueryInterface(IFID_PREVIEWPROVIDER, (void**)&provider)) {
+		previewWindow = provider->FetchPreviewWindow();
+	}
+
+	if (previewWindow == nullptr) {
+		if (in->mPreviewHostWindow) {
+			in->mPreviewHostWindow->AttachPreviewWindow(nullptr);
+			in->mPreviewHostWindow->ShowPreview(false);
+		}
+		in->mPreviewProvider.reset();
+	}
+	else {
+		if (in->mPreviewHostWindow == nullptr) {
+			in->mPreviewHostWindow = std::make_unique<launcherapp::mainwindow::preview::PreviewHostWindow>();
+		}
+		if (in->mPreviewHostWindow->Create(this)) {
+			in->mPreviewHostWindow->AttachPreviewWindow(previewWindow);
+			if (in->mPreviewHostWindow->HasPreviewWindow()) {
+				in->mPreviewProvider = provider;
+			}
+			else {
+				previewWindow->Leave();
+				in->mPreviewProvider.reset();
+			}
+		}
+		else {
+			in->mPreviewHostWindow.reset();
+			previewWindow->Leave();
+		}
+	}
+
+	if (in->mLayout && GetSafeHwnd()) {
+		in->mLayout->RecalcControls(GetSafeHwnd(), &in->mInput);
+	}
 }
 
 /**
@@ -1615,8 +1675,9 @@ void LauncherMainWindow::UpdateCandidates()
 		ClearContent();
 		return;
 	}
-	// 状態変更を通知
+	// プレビューの再配置がウインドウ位置を保存する前に、キーワード状態に応じたサイズを復元する
 	in->mLayout->UpdateInputStatus(&in->mInput, false);
+	UpdatePreviewWindow();
 
 	auto pCmd = GetCurrentCommand();
 	if (pCmd == nullptr) {
@@ -2012,6 +2073,7 @@ void LauncherMainWindow::SelectCandidate(int index)
 	// 選択された項目に対応するコマンドを現在のコマンドに変更する
 	in->mCandidates.SetCurrentSelect(index);
 	UpdateData(FALSE);
+	UpdatePreviewWindow();
 }
 
 // 候補欄のリストをクリックしたときの処理
@@ -2078,10 +2140,6 @@ void LauncherMainWindow::OnSize(UINT type, int cx, int cy)
 	__super::OnSize(type, cx, cy);
 
 	in->mLayout->RecalcControls(GetSafeHwnd(), &in->mInput);
-
-	if (in->mCandidateListBox.GetSafeHwnd()) {
-		in->mCandidateListBox.UpdateSize(cx, cy);
-	}
 	in->mState->OnWindowGeometryChanged();
 }
 

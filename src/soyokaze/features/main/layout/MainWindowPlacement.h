@@ -42,6 +42,7 @@ public:
 
 // 候補欄
 	CWnd* GetCandidateList();
+	launcherapp::mainwindow::preview::PreviewHostWindow* GetPreviewHostWindow();
 	int GetCandidateListWindowWidth();
 	int GetCandidateListWindowHeight();
 	// 上の余白

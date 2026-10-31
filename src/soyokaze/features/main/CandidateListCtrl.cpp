@@ -53,6 +53,7 @@ CandidateListCtrl::~CandidateListCtrl()
 
 BEGIN_MESSAGE_MAP(CandidateListCtrl, CListCtrl)
 	ON_WM_SETFONT()
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 void CandidateListCtrl::OnSetFont(CFont* font, BOOL redraw)
@@ -68,6 +69,12 @@ void CandidateListCtrl::OnSetFont(CFont* font, BOOL redraw)
 	in->mShouldReinitColumns = true;
 	InitColumns();
 	Invalidate();
+}
+
+void CandidateListCtrl::OnSize(UINT type, int cx, int cy)
+{
+	__super::OnSize(type, cx, cy);
+	UpdateSize(cx, cy);
 }
 
 // 現在選択中のアイテムの領域を取得

@@ -166,6 +166,11 @@ CWnd* MainWindowPlacement::GetCandidateList()
 	return mCandidateList;
 }
 
+launcherapp::mainwindow::preview::PreviewHostWindow* MainWindowPlacement::GetPreviewHostWindow()
+{
+	return mMainWnd->GetPreviewHostWindow();
+}
+
 int MainWindowPlacement::GetCandidateListWindowWidth()
 {
 	auto list = GetCandidateList();

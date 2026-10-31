@@ -223,6 +223,9 @@
     <Filter Include="features\main\layout">
       <UniqueIdentifier>{fcc5abc1-3e80-4540-ab8a-02290af3e331}</UniqueIdentifier>
     </Filter>
+    <Filter Include="features\main\preview">
+      <UniqueIdentifier>{2d46050a-2cb5-4b1d-987d-0c5ec40aa12e}</UniqueIdentifier>
+    </Filter>
     <Filter Include="commands\snippetgroup">
       <UniqueIdentifier>{e7e0e85c-2f0f-4922-b922-67d2c2e7319b}</UniqueIdentifier>
     </Filter>
@@ -954,6 +957,9 @@
     <ClInclude Include="commands/core/CommandIF.h">
       <Filter>commands\core</Filter>
     </ClInclude>
+    <ClInclude Include="commands\core\PreviewProvider.h">
+      <Filter>commands\core</Filter>
+    </ClInclude>
     <ClInclude Include="commands/core/CommandRepository.h">
       <Filter>commands\core</Filter>
     </ClInclude>
@@ -1391,6 +1397,15 @@
     </ClInclude>
     <ClInclude Include="features\main\layout\MainWindowPlacement.h">
       <Filter>features\main\layout</Filter>
+    </ClInclude>
+    <ClInclude Include="features\main\preview\PreviewHostWindow.h">
+      <Filter>features\main\preview</Filter>
+    </ClInclude>
+    <ClInclude Include="features\main\preview\PreviewLayout.h">
+      <Filter>features\main\preview</Filter>
+    </ClInclude>
+    <ClInclude Include="features\main\preview\PreviewWindow.h">
+      <Filter>features\main\preview</Filter>
     </ClInclude>
     <ClInclude Include="utility\WinHttp.h">
       <Filter>utility</Filter>
@@ -3112,6 +3127,9 @@
     </ClCompile>
     <ClCompile Include="features\main\layout\MainWindowLayout.cpp">
       <Filter>features\main\layout</Filter>
+    </ClCompile>
+    <ClCompile Include="features\main\preview\PreviewHostWindow.cpp">
+      <Filter>features\main\preview</Filter>
     </ClCompile>
     <ClCompile Include="utility\HWNDRect.cpp">
       <Filter>utility</Filter>

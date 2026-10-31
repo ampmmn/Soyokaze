@@ -23,6 +23,8 @@ public:
 	virtual bool PlaceEdit(HWND elemHwnd, LauncherInput* status) = 0;
 	// 候補欄のサイズ計算と配置
 	virtual bool PlaceCandidateList(HWND elemHwnd, LauncherInput* status) = 0;
+	// プレビュー欄のサイズ計算と配置
+	virtual bool PlacePreviewHost(HWND elemHwnd, LauncherInput* status) = 0;
 	// オプションボタンのサイズ計算と配置
 	virtual bool PlaceOptionButton(HWND elemHwnd, LauncherInput* status) = 0;
 	// 適用

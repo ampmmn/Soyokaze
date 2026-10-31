@@ -27,6 +27,7 @@
 |[MainWindowDeactivateBlocker](./MainWindowDeactivateBlocker.h)|一時的に非アクティブ時の非表示を抑制する|
 |[CandidateList](./CandidateList.h)|通常の候補一覧を保持する|
 |[CandidateListCtrl](./CandidateListCtrl.h)|通常の候補一覧を表示するリストコントロール|
+|[PreviewHostWindow](./preview/PreviewHostWindow.h)|コマンドが提供するプレビューウインドウをメインウインドウ内に配置する|
 |[CandidateListRenderer](./CandidateListRenderer.h)|候補欄の描画と項目寸法を提供するインターフェース|
 |[StandardCandidateListRenderer](./StandardCandidateListRenderer.h)|候補欄の1行表示と共通描画処理を行う|
 |[TwoLineCandidateListRenderer](./TwoLineCandidateListRenderer.h)|コマンド名と説明を2行で表示する|
@@ -54,6 +55,7 @@ classDiagram
         +SetCandidateList(candidates)
         +InitColumns()
         +UpdateSize(cx, cy)
+        +OnSize(type, cx, cy)
         +DrawItem(drawItemStruct)
         +OnUpdateSelect(sender)
         +OnUpdateItems(sender)
@@ -92,6 +94,12 @@ classDiagram
 `StandardCandidateListRenderer`の描画処理は、名前とコマンド種別の描画を仮想メソッドへ委譲する。`TwoLineCandidateListRenderer`はこれらの描画処理と項目高をオーバーライドし、共通の背景・選択状態・アイコン描画は基底クラスの機能を利用する。
 
 表示形式に固有の処理は対応するレンダラーに置き、`StandardCandidateListRenderer`に表示形式を切り替えるフラグや分岐を追加しない。項目高の差は`TwoLineCandidateListRendererTest.cpp`で確認する。
+
+## プレビュー欄と候補欄の幅調整
+
+`DefaultComponentPlacer`はプレビューの表示状態に応じて、候補欄とプレビュー欄の幅を`PreviewLayout`で計算して配置する。プレビューを表示すると候補欄のコントロール幅も変わる。
+
+候補欄のサイズ変更は`CandidateListCtrl::OnSize()`で受け取り、`UpdateSize()`を呼び出して列幅と描画サイズを更新する。列幅の更新をメインウインドウのリサイズ通知だけに依存させず、プレビューの表示・非表示による候補欄単独のリサイズにも追従させる。列幅の再計算は`CandidateListCtrlTest.cpp`で確認する。
 
 ### CandidateListRendererのクラス図
 
@@ -250,11 +258,15 @@ Stateの変更は`LauncherMainWindow::ChangeState()`を通じて行う。遷移�
 - 追加候補検索の開始判定、引数範囲取得、`IsAcceptArguments()`と`CanResolve()`の役割を別々に保つ。
 - `Tab`確定後の再検索・再表示と、`Enter`確定後の通常検索への復帰を区別する。
 - キャレットや選択範囲の変更、ウインドウ移動・リサイズ時のState遷移を確認する。
+- プレビューの表示・非表示で候補欄の幅が変わったとき、候補欄の各列幅も更新されることを確認する。
 - Stateごとの動作変更には`tests/testcode/soyokaze/mainwindow/state/LauncherWindowStateTest.cpp`のテストを追加する。
 
 ## 関連ファイル
 
 - `src/soyokaze/features/main/LauncherMainWindow.h/.cpp`
+- `src/soyokaze/features/main/CandidateListCtrl.h/.cpp`
+- `src/soyokaze/features/main/preview/PreviewHostWindow.h/.cpp`
+- `src/soyokaze/features/main/preview/PreviewLayout.h`
 - `src/soyokaze/features/main/ExtraCandidateListCtrl.h/.cpp`
 - `src/soyokaze/features/main/state/LauncherWindowState.h`
 - `src/soyokaze/features/main/state/LauncherWindowStateBase.h/.cpp`
@@ -266,4 +278,5 @@ Stateの変更は`LauncherMainWindow::ChangeState()`を通じて行う。遷移�
 - `src/soyokaze/features/main/layout/MainWindowAppearance.h/.cpp`
 - `src/soyokaze/features/main/layout/WindowTransparency.h/.cpp`
 - `tests/testcode/soyokaze/mainwindow/state/LauncherWindowStateTest.cpp`
+- `tests/testcode/soyokaze/CandidateListCtrlTest.cpp`
 

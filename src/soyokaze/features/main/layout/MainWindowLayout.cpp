@@ -8,6 +8,7 @@
 #include "features/main/layout/DefaultComponentPlacer.h"
 #include "features/main/layout/MainWindowPosition.h"
 #include "features/main/layout/MainWindowPlacement.h"
+#include "features/main/preview/PreviewHostWindow.h"
 
 
 #ifdef _DEBUG
@@ -461,6 +462,11 @@ void MainWindowLayout::RecalcControls(HWND hwnd, LauncherInput* status)
 	// 候補欄
 	auto listCtrl = mainWnd->GetDlgItem(IDC_LIST_CANDIDATE);
 	placer->PlaceCandidateList(listCtrl->GetSafeHwnd(), status);
+	// プレビュー欄
+	auto previewHost = in->mMainWnd->GetPreviewHostWindow();
+	if (previewHost && previewHost->GetSafeHwnd()) {
+		placer->PlacePreviewHost(previewHost->GetSafeHwnd(), status);
+	}
 	// オプションボタン
 	auto optionButton = mainWnd->GetDlgItem(IDC_BUTTON_OPTION);
 	placer->PlaceOptionButton(optionButton->GetSafeHwnd(), status);

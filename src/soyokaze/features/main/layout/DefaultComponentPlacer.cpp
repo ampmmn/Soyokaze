@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "DefaultComponentPlacer.h"
 #include "features/main/layout/MainWindowPlacement.h"
+#include "features/main/preview/PreviewHostWindow.h"
+#include "features/main/preview/PreviewLayout.h"
 #include "setting/AppPreference.h"
 #include "utility/HWNDRect.h"
 
@@ -16,6 +18,8 @@ struct DefaultComponentPlacer::PImpl
 	bool mIsShowGuide{true};
 	bool mIsShowIcon{true};
 	bool mIsShowOption{false};
+	bool mIsShowPreview{false};
+	launcherapp::mainwindow::preview::PreviewLayout mPreviewLayout;
 
 };
 
@@ -204,7 +208,16 @@ bool DefaultComponentPlacer::PlaceCandidateList(HWND elemHwnd, LauncherInput* st
 	int y =	rcEdit.bottom + margin;
 
 	// 親ウインドウの幅と、ガイド欄を配置した位置をもとに幅を決定
-	int cx = in->mPlacement->GetMainWindowWidth() - MARGIN_X * 2;
+	int clientWidth = in->mPlacement->GetMainWindowWidth();
+	auto previewHost = in->mPlacement->GetPreviewHostWindow();
+	if (previewHost && previewHost->HasPreviewWindow()) {
+		in->mPreviewLayout = launcherapp::mainwindow::preview::CalculatePreviewLayout(clientWidth, MARGIN_X, MARGIN_X);
+	}
+	else {
+		in->mPreviewLayout = {};
+		in->mPreviewLayout.mCandidateWidth = (std::max)(0, clientWidth - MARGIN_X * 2);
+	}
+	int cx = in->mPreviewLayout.mCandidateWidth;
 
 	int cy = in->mPlacement->GetMainWindowHeight() - rcEdit.bottom - margin - rcGuide.Height() - MARGIN_Y;
 
@@ -213,6 +226,36 @@ bool DefaultComponentPlacer::PlaceCandidateList(HWND elemHwnd, LauncherInput* st
 
 	SetWindowPos(elemHwnd, nullptr, x, y, cx, cy, SWP_NOZORDER);
 
+	return true;
+}
+
+// プレビュー欄のサイズ計算と配置
+bool DefaultComponentPlacer::PlacePreviewHost(HWND elemHwnd, LauncherInput* status)
+{
+	in->mIsShowPreview = false;
+	auto previewHost = in->mPlacement->GetPreviewHostWindow();
+	if (previewHost == nullptr || previewHost->HasPreviewWindow() == false ||
+	    status == nullptr || status->HasKeyword() == false) {
+		return true;
+	}
+
+	int marginX{in->mPlacement->GetMarginLeft()};
+	int clientWidth = in->mPlacement->GetMainWindowWidth();
+	in->mPreviewLayout = launcherapp::mainwindow::preview::CalculatePreviewLayout(clientWidth, marginX, marginX);
+	if (in->mPreviewLayout.mIsPreviewVisible == false) {
+		return true;
+	}
+
+	CRect rcCandidate;
+	auto candidateList = in->mPlacement->GetCandidateList();
+	candidateList->GetWindowRect(&rcCandidate);
+	CWnd::FromHandle(::GetParent(elemHwnd))->ScreenToClient(&rcCandidate);
+
+	int cx = in->mPreviewLayout.mPreviewWidth;
+	int cy = rcCandidate.Height();
+	spdlog::debug("preview xywh=({},{},{},{})", in->mPreviewLayout.mPreviewX, rcCandidate.top, cx, cy);
+	SetWindowPos(elemHwnd, nullptr, in->mPreviewLayout.mPreviewX, rcCandidate.top, cx, cy, SWP_NOZORDER);
+	in->mIsShowPreview = true;
 	return true;
 }
 
@@ -278,6 +321,11 @@ void DefaultComponentPlacer::Apply(HWND hwnd, LauncherInput* status)
 	}
 	else {
 		list->ShowWindow(SW_HIDE);
+	}
+
+	auto previewHost = in->mPlacement->GetPreviewHostWindow();
+	if (previewHost) {
+		previewHost->ShowPreview(in->mIsShowPreview);
 	}
 }
 

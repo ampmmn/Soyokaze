@@ -1,6 +1,7 @@
 #pragma once
 
 #include "commands/common/UserCommandBase.h"
+#include "commands/core/SelectionBehavior.h"
 #include <memory>
 
 namespace launcherapp {
@@ -10,7 +11,8 @@ namespace alias {
 class CommandParam;
 
 class AliasCommand :
- virtual	public launcherapp::commands::common::UserCommandBase
+ virtual	public launcherapp::commands::common::UserCommandBase,
+ virtual public launcherapp::core::SelectionBehavior
 {
 public:
 	AliasCommand();
@@ -31,6 +33,18 @@ public:
 
 	bool Save(CommandEntryIF* entry) override;
 	bool Load(CommandEntryIF* entry) override;
+
+ // SelectionBehavior
+	/** 選択されたときの処理を行う */
+	void OnSelect(Command* prior) override;
+	/** 選択解除されたときの処理を行う */
+	void OnUnselect(Command* next) override;
+	/** 実行後のウインドウを閉じる方針を取得する */
+	launcherapp::core::SelectionBehavior::CloseWindowPolicy GetCloseWindowPolicy(uint32_t modifierMask) override;
+	/** 入力欄へ補完するキーワードを取得する */
+	bool CompleteKeyword(CString& keyword, int& startPos, int& endPos) override;
+	/** IFIDに対応するインターフェースを取得する */
+	bool QueryInterface(const launcherapp::core::IFID& ifid, void** cmd) override;
 
 // Editable
 	// コマンドを編集するためのダイアログを作成/取得する

@@ -492,6 +492,7 @@
     <ClInclude Include="commands\core\CommandQueryItemList.h" />
     <ClInclude Include="commands\core\DefaultCommand.h" />
     <ClInclude Include="commands\core\EditableIF.h" />
+    <ClInclude Include="commands\core\PreviewProvider.h" />
     <ClInclude Include="commands\core\metrics\CommandProviderCountMetrics.h" />
     <ClInclude Include="commands\core\metrics\CommandRepositoryCommandCountMetrics.h" />
     <ClInclude Include="commands\core\metrics\CommandRepositoryListenerCountMetrics.h" />
@@ -864,6 +865,9 @@
     <ClInclude Include="features\main\layout\MainWindowPlacement.h" />
     <ClInclude Include="features\main\layout\MainWindowAppearance.h" />
     <ClInclude Include="features\main\layout\MainWindowPosition.h" />
+    <ClInclude Include="features\main\preview\PreviewHostWindow.h" />
+    <ClInclude Include="features\main\preview\PreviewLayout.h" />
+    <ClInclude Include="features\main\preview\PreviewWindow.h" />
     <ClInclude Include="features\main\MainWindowCommandQueryRequest.h" />
     <ClInclude Include="features\main\MainWindowDeactivateBlocker.h" />
     <ClInclude Include="features\main\MainWindowHotKey.h" />
@@ -1451,6 +1455,7 @@
     <ClCompile Include="features\main\layout\DefaultComponentPlacer.cpp" />
     <ClCompile Include="features\main\layout\MainWindowLayout.cpp" />
     <ClCompile Include="features\main\layout\MainWindowPlacement.cpp" />
+    <ClCompile Include="features\main\preview\PreviewHostWindow.cpp" />
     <ClCompile Include="features\main\layout\MainWindowAppearance.cpp" />
     <ClCompile Include="features\main\layout\MainWindowPosition.cpp" />
     <ClCompile Include="features\main\MainWindowCommandQueryRequest.cpp" />

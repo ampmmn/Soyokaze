@@ -9,6 +9,9 @@ namespace launcherapp { namespace mainwindow {
 namespace guide {
 class GuideCtrl;
 }
+namespace preview {
+class PreviewHostWindow;
+}
 
 	// ランチャーのメイン画面の部品を取得する機能を提供するI/F
 class LauncherMainWindowIF
@@ -34,6 +37,8 @@ public:
 
 	// 候補欄
 	virtual CandidateListCtrl* GetCandidateList() = 0;
+	// プレビューウインドウの配置先を取得する
+	virtual preview::PreviewHostWindow* GetPreviewHostWindow() = 0;
 	
 	// メインウインドウのフォント
 	virtual CFont* GetMainWindowFont() = 0;

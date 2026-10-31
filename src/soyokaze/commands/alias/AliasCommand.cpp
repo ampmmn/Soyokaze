@@ -189,6 +189,47 @@ bool AliasCommand::Load(CommandEntryIF* entry)
 	return true;
 }
 
+// 選択されたときの処理を行う
+void AliasCommand::OnSelect(Command*)
+{
+}
+
+// 選択解除されたときの処理を行う
+void AliasCommand::OnUnselect(Command*)
+{
+}
+
+// 実行後のウインドウを閉じる方針を取得する
+launcherapp::core::SelectionBehavior::CloseWindowPolicy
+AliasCommand::GetCloseWindowPolicy(uint32_t)
+{
+	if (in->mParam.mIsPasteOnly) {
+		// 入力欄への貼り付け後に候補を表示するため、ウインドウを閉じない
+		return launcherapp::core::SelectionBehavior::CLOSEWINDOW_NOCLOSE;
+	}
+	return launcherapp::core::SelectionBehavior::CLOSEWINDOW_ASYNC;
+}
+
+// 入力欄への補完は行わない
+bool AliasCommand::CompleteKeyword(CString&, int&, int&)
+{
+	return false;
+}
+
+// SelectionBehaviorを含むインターフェースを取得する
+bool AliasCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
+{
+	if (UserCommandBase::QueryInterface(ifid, cmd)) {
+		return true;
+	}
+	if (ifid == IFID_SELECTIONBEHAVIOR) {
+		AddRef();
+		*cmd = (launcherapp::core::SelectionBehavior*)this;
+		return true;
+	}
+	return false;
+}
+
 bool AliasCommand::NewDialog(Parameter* param)
 {
 	// 新規作成ダイアログを表示

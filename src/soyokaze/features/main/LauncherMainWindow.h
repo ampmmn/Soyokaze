@@ -31,6 +31,11 @@ namespace core {
 	class CommandHotKeyManager;
 	class CommandRepository;
 }
+namespace mainwindow {
+namespace preview {
+	class PreviewHostWindow;
+}
+}
 }
 
 // LauncherMainWindow ダイアログ
@@ -126,6 +131,8 @@ protected:
 
 	// 現在選択中のコマンドを取得
 	launcherapp::core::Command* GetCurrentCommand();
+	/** 選択中コマンドのプレビューウインドウを同期する */
+	void UpdatePreviewWindow();
 
 // 実装
 protected:
@@ -142,6 +149,7 @@ protected:
 	launcherapp::mainwindow::guide::GuideCtrl* GetGuideLabel() override;
 	KeywordEdit* GetEdit() override;
 	CandidateListCtrl* GetCandidateList() override;
+	launcherapp::mainwindow::preview::PreviewHostWindow* GetPreviewHostWindow() override;
 	CFont* GetMainWindowFont() override;
 	/** メインウインドウのフォント変更を追加候補Popupへ通知する */
 	void OnMainWindowFontChanged(CFont* font) override;

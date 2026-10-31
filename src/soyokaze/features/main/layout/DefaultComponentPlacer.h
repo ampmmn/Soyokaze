@@ -28,6 +28,8 @@ public:
 	bool PlaceEdit(HWND elemHwnd, LauncherInput* status) override;
 	// 候補欄のサイズ計算と配置
 	bool PlaceCandidateList(HWND elemHwnd, LauncherInput* status) override;
+	// プレビュー欄のサイズ計算と配置
+	bool PlacePreviewHost(HWND elemHwnd, LauncherInput* status) override;
 	// オプションボタンのサイズ計算と配置
 	bool PlaceOptionButton(HWND elemHwnd, LauncherInput* status) override;
 	// 適用

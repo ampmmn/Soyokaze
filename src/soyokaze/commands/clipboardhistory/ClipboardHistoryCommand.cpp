@@ -4,6 +4,7 @@
 #include "commands/clipboardhistory/ClipboardPreviewWindow.h"
 #include "commands/common/Clipboard.h"
 #include "commands/common/CommandParameterFunctions.h"
+#include "core/IFIDDefine.h"
 #include "actions/clipboard/CopyClipboardAction.h"
 #include "features/main/controller/MainWindowController.h"
 #include "icon/IconLoader.h"
@@ -114,46 +115,14 @@ ClipboardHistoryCommand::Clone()
 	return new ClipboardHistoryCommand(in->mPrefix, in->mAppendDate, in->mData);
 }
 
-// 選択された
-void ClipboardHistoryCommand::OnSelect(Command* prior)
+launcherapp::mainwindow::preview::PreviewWindow* ClipboardHistoryCommand::FetchPreviewWindow()
 {
-	UNREFERENCED_PARAMETER(prior);
 	auto previewWindow = PreviewWindow::Get();
-	previewWindow->Show();
+	if (previewWindow->IsEnable() == false) {
+		return nullptr;
+	}
 	previewWindow->SetPreviewText(in->mData, in->mAppendDate);
-}
-
-// 選択解除された
-void ClipboardHistoryCommand::OnUnselect(Command* next)
-{
-	bool shouldHidePreview = true;
-	if (next) {
-		ClipboardHistoryCommand* ptr = nullptr;
-		if (next->QueryInterface(IFID_CLIPBOARDHISTORYCOMMAND, (void**)&ptr)) {
-			ptr->Release();
-			shouldHidePreview = false;
-		}
-	}
-
-	if (shouldHidePreview == false) {
-		return;
-	}
-
-	auto previewWindow = PreviewWindow::Get();
-	previewWindow->Hide();
-}
-
-// 実行後のウインドウを閉じる方法を決定する
-launcherapp::core::SelectionBehavior::CloseWindowPolicy
-ClipboardHistoryCommand::GetCloseWindowPolicy(uint32_t )
-{
-	return launcherapp::core::SelectionBehavior::CLOSEWINDOW_ASYNC;
-}
-
-// 選択時に入力欄に設定するキーワードとキャレットを設定する
-bool ClipboardHistoryCommand::CompleteKeyword(CString& , int& , int& )
-{
-	return false;
+	return previewWindow;
 }
 
 // UnknownIF
@@ -163,9 +132,9 @@ bool ClipboardHistoryCommand::QueryInterface(const launcherapp::core::IFID& ifid
 		return true;
 	}
 
-	if (ifid == IFID_SELECTIONBEHAVIOR) {
+	if (ifid == IFID_PREVIEWPROVIDER) {
 		AddRef();
-		*cmd = (launcherapp::core::SelectionBehavior*)this;
+		*cmd = (launcherapp::core::PreviewProvider*)this;
 		return true;
 	}
 	else if (ifid == IFID_CLIPBOARDHISTORYCOMMAND) {

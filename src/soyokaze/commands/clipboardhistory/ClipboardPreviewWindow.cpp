@@ -1,9 +1,6 @@
 #include "pch.h"
 #include "ClipboardPreviewWindow.h"
-#include "app/LauncherEventDispatcher.h"
-#include "core/LauncherEventListenerIF.h"
 #include "SharedHwnd.h"
-#include "control/WindowPosition.h"
 #include "resource.h"
 
 #ifdef _DEBUG
@@ -11,8 +8,6 @@
 #endif
 
 namespace launcherapp { namespace commands { namespace clipboardhistory {
-
-constexpr UINT TIMERID_HIDE = 1;
 
 class PreviewDialog : public CDialog
 {
@@ -33,36 +28,35 @@ public:
 	BOOL OnInitDialog() override
 	{
 		__super::OnInitDialog();
-
-		LONG_PTR styleEx = WS_EX_NOACTIVATE;
-		SetWindowLongPtr(GetSafeHwnd(), GWL_EXSTYLE, styleEx);
+		GetClientRect(&mInitialClientRect);
+		CWnd* info = GetDlgItem(IDC_STATIC_INFO);
+		info->GetWindowRect(&mInfoRect);
+		ScreenToClient(&mInfoRect);
+		CWnd* edit = GetDlgItem(IDC_EDIT_PREVIEW);
+		edit->GetWindowRect(&mPreviewRect);
+		ScreenToClient(&mPreviewRect);
+		mIsInitialized = true;
 
 		return TRUE;
 	}
 
 	DECLARE_MESSAGE_MAP()
-	// クライアント領域をドラッグしてウインドウを移動させるための処理
-	afx_msg LRESULT OnNcHitTest(CPoint point)
+	afx_msg void OnSize(UINT type, int cx, int cy)
 	{
-		RECT rect;
-		GetClientRect(&rect);
-
-		CPoint ptClient(point);
-		ScreenToClient(&ptClient);
-
-		if (PtInRect(&rect, ptClient) && (GetAsyncKeyState( VK_LBUTTON ) & 0x8000) )
-		{
-			return HTCAPTION;
+		__super::OnSize(type, cx, cy);
+		if (mIsInitialized == false) {
+			return;
 		}
-		return __super::OnNcHitTest(point);
-	}
 
-	afx_msg void OnTimer(UINT_PTR timerId)
-	{
-		KillTimer(timerId);
-
-		// 非表示にする
-		ShowWindow(SW_HIDE);
+		int deltaWidth = cx - mInitialClientRect.Width();
+		int deltaHeight = cy - mInitialClientRect.Height();
+		CWnd* info = GetDlgItem(IDC_STATIC_INFO);
+		CWnd* edit = GetDlgItem(IDC_EDIT_PREVIEW);
+		info->SetWindowPos(nullptr, mInfoRect.left, mInfoRect.top, mInfoRect.Width() + deltaWidth,
+		                   mInfoRect.Height(), SWP_NOZORDER | SWP_NOACTIVATE);
+		edit->SetWindowPos(nullptr, mPreviewRect.left, mPreviewRect.top, mPreviewRect.Width() + deltaWidth,
+		                   mPreviewRect.Height() + deltaHeight, SWP_NOZORDER | SWP_NOACTIVATE);
+		UpdateScrollbar();
 	}
 
 
@@ -112,73 +106,41 @@ public:
 	CString mInfoText;
 	// クリップボードのテキスト
 	CString mPreviewText;
+	CRect mInitialClientRect;
+	CRect mInfoRect;
+	CRect mPreviewRect;
+	bool mIsInitialized{false};
 };
 
 BEGIN_MESSAGE_MAP(PreviewDialog, CDialog)
-	ON_WM_NCHITTEST()
-	ON_WM_TIMER()
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-struct PreviewWindow::PImpl : public LauncherEventListenerIF
+struct PreviewWindow::PImpl
 {
-	PImpl()
-	{
-		LauncherEventDispatcher::Get()->AddListener(this);
-	}
-	~PImpl()
-	{
-		LauncherEventDispatcher::Get()->RemoveListener(this);
-	}
-
 	bool Create();
 
-	static LRESULT CALLBACK OnWindowProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp);
-
-	void OnLockScreenOccurred() override {}
-	void OnUnlockScreenOccurred() override {}
-	void OnTimer() override {}
-	void OnLauncherActivate() override {}
-	void OnLauncherUnactivate() override {}
-	/** モニター構成に対応するウインドウ位置があれば復元する */
-	void OnMonitorConfigurationChanged() override
-	{
-		if (mWindowPos.get() == nullptr) {
-			return;
-		}
-		mWindowPos->Restore(mWindow.GetSafeHwnd());
-	}
-
 	PreviewDialog mWindow;
-	std::unique_ptr<WindowPosition> mWindowPos;
 	bool mIsEnable{true};
+	bool mIsDestroyed{false};
 };
 
 bool PreviewWindow::PImpl::Create()
 {
 	SharedHwnd mainWnd;
+	HWND priorFocus = ::GetFocus();
 	if (mWindow.Create(IDD_CLIPBOARD_PREVIEW, CWnd::FromHandle(mainWnd.GetHwnd())) == FALSE) {
 		return false;
 	}
-
-	// 位置情報を復元する(ある場合は)
-	mWindowPos.reset(new WindowPosition(_T("ClipboardPreview")));
-	if (mWindowPos->Restore(mWindow.GetSafeHwnd()) == false) {
-		// 初回は復元できないので、メインウインドウの右側に表示する
-		CRect rc;
-		GetWindowRect(mainWnd.GetHwnd(), &rc);
-		SetWindowPos(mWindow.GetSafeHwnd(), nullptr, rc.right, rc.top, 0, 0, SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOSIZE);
+	if (IsWindow(priorFocus)) {
+		::SetFocus(priorFocus);
 	}
 
 	return true;
-}
-
-LRESULT CALLBACK PreviewWindow::PImpl::OnWindowProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
-{
-	return DefWindowProc(hwnd, msg, wp, lp);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -199,38 +161,38 @@ PreviewWindow* PreviewWindow::Get()
 	return &inst;
 }
 
-bool PreviewWindow::Show()
+void PreviewWindow::Enter()
 {
-	if (in->mIsEnable == false)  {
-		return false;
+	if (in->mIsEnable == false || in->mIsDestroyed) {
+		return;
 	}
 
 	if (in->mWindow.GetSafeHwnd() == nullptr) {
 		if (in->Create() == false) {
-			return false;
+			return;
 		}
 	}
 
-	in->mWindow.KillTimer(TIMERID_HIDE);
-	in->mWindow.ShowWindow(SW_SHOWNOACTIVATE);
-
-	return true;
+	in->mWindow.ShowWindow(SW_SHOW);
 }
 
-bool PreviewWindow::Hide()
+void PreviewWindow::Leave()
 {
 	if (in->mWindow.GetSafeHwnd() == nullptr) {
-		return true;
+		return;
 	}
+	in->mWindow.ShowWindow(SW_HIDE);
+}
 
-	// 位置情報を更新
-	in->mWindowPos->Update(in->mWindow.GetSafeHwnd());
-
-	// ここでウインドウを直接非表示にすると、コマンドの絞り込み時に画面がちらつくので
-	// Timer経由でワンテンポ遅らせる。すぐに次の表示がきたら、タイマーをキャンセルする
-	in->mWindow.SetTimer(TIMERID_HIDE, 250, 0);
-
-	return true;
+HWND PreviewWindow::GetHwnd()
+{
+	if (in->mIsDestroyed) {
+		return nullptr;
+	}
+	if (in->mWindow.GetSafeHwnd() == nullptr && in->Create() == false) {
+		return nullptr;
+	}
+	return in->mWindow.GetSafeHwnd();
 }
 
 void PreviewWindow::SetPreviewText(const CString& text, uint64_t date)
@@ -256,20 +218,29 @@ void PreviewWindow::SetPreviewText(const CString& text, uint64_t date)
 // ウインドウを破棄する
 void PreviewWindow::Destroy()
 {
+	in->mIsDestroyed = true;
 	if (in->mWindow.GetSafeHwnd()) {
-		// 次回のためにウインドウ位置情報を記憶する
-		in->mWindowPos->Save();
+		in->mWindow.DestroyWindow();
 	}
 }
 
 void PreviewWindow::SetEnable(bool isEnable)
 {
 	in->mIsEnable = isEnable;
+	if (isEnable == false) {
+		Leave();
+	}
 }
 
 void PreviewWindow::Disable()
 {
 	in->mIsEnable = false;
+	Leave();
+}
+
+bool PreviewWindow::IsEnable() const
+{
+	return in->mIsEnable && in->mIsDestroyed == false;
 }
 
 }}} // end of namespace launcherapp::commands::clipboardhistory

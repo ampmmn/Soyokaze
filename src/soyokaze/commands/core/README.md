@@ -2,6 +2,17 @@
 
 コマンド関連機能を実現するためのメインとなる機能を置く
 
+## コマンドの拡張インターフェース
+
+`Command`はコマンド名、説明、実行アクションなどの基本機能を定義する。追加機能はすべてのコマンドに持たせず、必要なコマンドが`UnknownIF::QueryInterface()`を通じて個別のインターフェースを公開する。
+
+|インターフェース|役割|
+|---|---|
+|[`SelectionBehavior`](./SelectionBehavior.h)|候補の選択・解除時の処理、入力欄の補完、コマンド実行後にメインウインドウを閉じる方針を提供する|
+|[`PreviewProvider`](./PreviewProvider.h)|選択中コマンドのプレビュー表示に使う`PreviewWindow`を提供する。プレビューが不要な場合は`nullptr`を返す|
+
+`SelectionBehavior::GetCloseWindowPolicy()`は`CLOSEWINDOW_ASYNC`、`CLOSEWINDOW_SYNC`、`CLOSEWINDOW_NOCLOSE`のいずれかを返し、実行後のウインドウ処理を選択する。`PreviewProvider::FetchPreviewWindow()`は、メインウインドウ内のプレビュー領域へ接続するビューを返す。プレビュー領域の配置と表示は`features/main`側が担当する。
+
 
 ## コマンド編集の流れ
 

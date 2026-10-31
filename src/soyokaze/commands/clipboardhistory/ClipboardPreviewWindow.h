@@ -1,10 +1,11 @@
 #pragma once
 
+#include "features/main/preview/PreviewWindow.h"
 #include <memory>
 
 namespace launcherapp { namespace commands { namespace clipboardhistory {
 
-class PreviewWindow
+class PreviewWindow : public launcherapp::mainwindow::preview::PreviewWindow
 {
 private:
 	PreviewWindow();
@@ -14,13 +15,15 @@ public:
 	static PreviewWindow* Get();
 
 public:
-	bool Show();
-	bool Hide();
+	void Enter() override;
+	void Leave() override;
+	HWND GetHwnd() override;
 	void SetPreviewText(const CString& text, uint64_t date);
 	void Destroy();
 
 	void SetEnable(bool isEnable);
 	void Disable();
+	bool IsEnable() const;
 
 private:
 	struct PImpl;
