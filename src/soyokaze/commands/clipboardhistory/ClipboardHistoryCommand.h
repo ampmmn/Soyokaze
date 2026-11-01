@@ -14,7 +14,7 @@ class ClipboardHistoryCommand :
 	virtual public launcherapp::core::PreviewProvider
 {
 public:
-	ClipboardHistoryCommand(const CString& prefix, uint64_t appendData, const CString& data, const std::vector<CString>& keywords = {});
+	ClipboardHistoryCommand(const CString& prefix, uint64_t appendData, const CString& data, bool usePreview, const std::vector<CString>& keywords = {});
 	virtual ~ClipboardHistoryCommand();
 
 	CString GetName() override;

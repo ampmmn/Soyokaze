@@ -12,6 +12,7 @@ TEST(SnippetGroupParamTest, SaveAndLoadIconData)
 	param.mName = _T("snippet");
 	param.mDescription = _T("description");
 	param.mIconData = { 0x01, 0x02, 0x03, 0x04 };
+	param.mUsePreview = true;
 
 	CommandJSONEntry entry(_T("snippet"));
 	entry.Init();
@@ -23,6 +24,7 @@ TEST(SnippetGroupParamTest, SaveAndLoadIconData)
 	EXPECT_EQ(param.mName, loaded.mName);
 	EXPECT_EQ(param.mDescription, loaded.mDescription);
 	EXPECT_EQ(param.mIconData, loaded.mIconData);
+	EXPECT_EQ(param.mUsePreview, loaded.mUsePreview);
 	EXPECT_TRUE(loaded.mItems.empty());
 }
 
@@ -38,4 +40,5 @@ TEST(SnippetGroupParamTest, LoadWithoutIconData)
 	ASSERT_TRUE(loaded.Load(&entry));
 
 	EXPECT_TRUE(loaded.mIconData.empty());
+	EXPECT_FALSE(loaded.mUsePreview);
 }

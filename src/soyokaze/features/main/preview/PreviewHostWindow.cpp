@@ -52,6 +52,7 @@ void PreviewHostWindow::AttachPreviewWindow(PreviewWindow* previewWindow)
 {
 	if (in->mPreviewWindow == previewWindow) {
 		if (previewWindow) {
+			ResizePreviewWindow();
 			HWND priorFocus = ::GetFocus();
 			previewWindow->Enter();
 			if (IsWindow(priorFocus) && ::GetFocus() != priorFocus) {
@@ -103,10 +104,27 @@ void PreviewHostWindow::AttachPreviewWindow(PreviewWindow* previewWindow)
 	             SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED | SWP_HIDEWINDOW);
 
 	in->mPreviewWindow = previewWindow;
+	ResizePreviewWindow();
 	previewWindow->Enter();
 	if (IsWindow(priorFocus) && ::GetFocus() != priorFocus) {
 		::SetFocus(priorFocus);
 	}
+}
+
+void PreviewHostWindow::ResizePreviewWindow()
+{
+	if (in->mPreviewWindow == nullptr || GetSafeHwnd() == nullptr) {
+		return;
+	}
+
+	HWND hwnd = in->mPreviewWindow->GetHwnd();
+	if (IsWindow(hwnd) == FALSE) {
+		return;
+	}
+
+	CRect clientRect;
+	GetClientRect(&clientRect);
+	::SetWindowPos(hwnd, nullptr, 0, 0, clientRect.Width(), clientRect.Height(), SWP_NOZORDER | SWP_NOACTIVATE);
 }
 
 bool PreviewHostWindow::HasPreviewWindow() const

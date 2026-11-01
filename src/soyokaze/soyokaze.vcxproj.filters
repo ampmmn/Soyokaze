@@ -43,6 +43,9 @@
     <Filter Include="commands\common">
       <UniqueIdentifier>{c85fc57e-50cc-4f8c-8842-c64d13e9df26}</UniqueIdentifier>
     </Filter>
+    <Filter Include="commands\common\preview">
+      <UniqueIdentifier>{76410cb4-1524-40d6-b21a-f611c6c707f5}</UniqueIdentifier>
+    </Filter>
     <Filter Include="commands\plugin">
       <UniqueIdentifier>{b1d346b8-a16d-4b26-bf56-6f5588e6e4db}</UniqueIdentifier>
     </Filter>
@@ -1731,11 +1734,11 @@
     <ClInclude Include="commands\winscp\WinScpCommandProvider.h">
       <Filter>commands\winscp</Filter>
     </ClInclude>
-    <ClInclude Include="commands\clipboardhistory\ClipboardPreviewWindow.h">
-      <Filter>commands\clipboardhistory</Filter>
+    <ClInclude Include="commands\common\preview\PreviewWindow.h">
+      <Filter>commands\common\preview</Filter>
     </ClInclude>
-    <ClInclude Include="commands\clipboardhistory\ClipboardPreviewHighlighter.h">
-      <Filter>commands\clipboardhistory</Filter>
+    <ClInclude Include="commands\common\preview\PreviewHighlighter.h">
+      <Filter>commands\common\preview</Filter>
     </ClInclude>
     <ClInclude Include="features\main\layout\MainWindowPosition.h">
       <Filter>features\main\layout</Filter>
@@ -3458,11 +3461,11 @@
     <ClCompile Include="commands\winscp\WinScpCommandProvider.cpp">
       <Filter>commands\winscp</Filter>
     </ClCompile>
-    <ClCompile Include="commands\clipboardhistory\ClipboardPreviewWindow.cpp">
-      <Filter>commands\clipboardhistory</Filter>
+    <ClCompile Include="commands\common\preview\PreviewWindow.cpp">
+      <Filter>commands\common\preview</Filter>
     </ClCompile>
-    <ClCompile Include="commands\clipboardhistory\ClipboardPreviewHighlighter.cpp">
-      <Filter>commands\clipboardhistory</Filter>
+    <ClCompile Include="commands\common\preview\PreviewHighlighter.cpp">
+      <Filter>commands\common\preview</Filter>
     </ClCompile>
     <ClCompile Include="features\main\layout\MainWindowPosition.cpp">
       <Filter>features\main\layout</Filter>

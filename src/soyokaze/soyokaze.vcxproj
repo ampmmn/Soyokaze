@@ -474,8 +474,8 @@
     <ClInclude Include="commands\clipboardhistory\ClipboardHistoryEventReceiver.h" />
     <ClInclude Include="commands\clipboardhistory\ClipboardHistoryProvider.h" />
     <ClInclude Include="commands\clipboardhistory\ClipboardHistoryQueryCancellationToken.h" />
-    <ClInclude Include="commands\clipboardhistory\ClipboardPreviewWindow.h" />
-    <ClInclude Include="commands\clipboardhistory\ClipboardPreviewHighlighter.h" />
+    <ClInclude Include="commands\common\preview\PreviewWindow.h" />
+    <ClInclude Include="commands\common\preview\PreviewHighlighter.h" />
     <ClInclude Include="commands\common\AutoWrap.h" />
     <ClInclude Include="commands\common\CommandParameterFunctions.h" />
     <ClInclude Include="commands\common\CommandSelectDialog.h" />
@@ -1099,8 +1099,8 @@
     <ClCompile Include="commands\clipboardhistory\ClipboardHistoryEventReceiver.cpp" />
     <ClCompile Include="commands\clipboardhistory\ClipboardHistoryProvider.cpp" />
     <ClCompile Include="commands\clipboardhistory\ClipboardHistoryQueryCancellationToken.cpp" />
-    <ClCompile Include="commands\clipboardhistory\ClipboardPreviewWindow.cpp" />
-    <ClCompile Include="commands\clipboardhistory\ClipboardPreviewHighlighter.cpp" />
+    <ClCompile Include="commands\common\preview\PreviewWindow.cpp" />
+    <ClCompile Include="commands\common\preview\PreviewHighlighter.cpp" />
     <ClCompile Include="commands\common\AutoWrap.cpp" />
     <ClCompile Include="commands\common\CommandParameterFunctions.cpp" />
     <ClCompile Include="commands\common\CommandSelectDialog.cpp" />

@@ -6,7 +6,7 @@
 #include "commands/clipboardhistory/ClipboardHistoryQueryCancellationToken.h"
 #include "commands/clipboardhistory/ClipboardHistoryEventReceiver.h"
 #include "commands/clipboardhistory/AppSettingClipboardHistoryPage.h"
-#include "commands/clipboardhistory/ClipboardPreviewWindow.h"
+#include "commands/common/preview/PreviewWindow.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/core/CommandFile.h"
 #include "app/LauncherEventDispatcher.h"
@@ -75,7 +75,7 @@ struct ClipboardHistoryProvider::PImpl :
 	 * @brief アプリケーションの終了時に呼ばれる
 	 */
 	void OnAppExit() override {
-		PreviewWindow::Get()->Destroy();
+		launcherapp::commands::common::preview::PreviewWindow::Get()->Destroy();
 	}
 
 	/**
@@ -125,13 +125,11 @@ struct ClipboardHistoryProvider::PImpl :
 			mHistoryDB.UseRegExpSearch(mParam.mIsDisableMigemo == false);
 			mReceiver.Activate(mParam.mInterval, mParam.mExcludePattern);
 			mReceiver.AddListener(&mHistoryDB);
-			PreviewWindow::Get()->SetEnable(mParam.mUsePreview);
 		}
 		else {
 			// クリップボード履歴を無効にする
 			mReceiver.Deactivate();
 			mHistoryDB.Unload();
-			PreviewWindow::Get()->Disable();
 		}
 	}
 
@@ -237,7 +235,7 @@ void ClipboardHistoryProvider::QueryAdhocCommands(
 	if (result.empty()) {
 		// 件数0件の場合でも、弱一致の候補表示を抑制するためにダミーの項目を追加する
 		commands.Add(CommandQueryItem(Pattern::HiddenMatch, 
-					new ClipboardHistoryCommand(prefix, 0, _T(""), keywords)));
+					new ClipboardHistoryCommand(prefix, 0, _T(""), in->mParam.mUsePreview, keywords)));
 		return;
 	}
 
@@ -245,7 +243,7 @@ void ClipboardHistoryProvider::QueryAdhocCommands(
 	for (auto& item : result) {
 		// 最低でも前方一致扱いとする
 		int level = (std::max)(item.mMatchLevel, (int)Pattern::FrontMatch);
-		commands.Add(CommandQueryItem(level, new ClipboardHistoryCommand(prefix, item.mAppendTime, item.mData, keywords)));
+		commands.Add(CommandQueryItem(level, new ClipboardHistoryCommand(prefix, item.mAppendTime, item.mData, in->mParam.mUsePreview, keywords)));
 	}
 }
 

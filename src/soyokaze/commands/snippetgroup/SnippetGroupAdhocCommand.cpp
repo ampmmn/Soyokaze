@@ -4,6 +4,8 @@
 #include "commands/snippetgroup/SnippetGroupCommand.h"
 #include "commands/snippetgroup/SnippetGroupParam.h"
 #include "commands/common/ExpandFunctions.h"
+#include "commands/common/preview/PreviewWindow.h"
+#include "core/IFIDDefine.h"
 #include "actions/clipboard/CopyClipboardAction.h"
 
 #ifdef _DEBUG
@@ -85,6 +87,21 @@ CString SnippetGroupAdhocCommand::GetSourceName()
 	return in->mBaseCommand->GetParam().mName;
 }
 
+launcherapp::mainwindow::preview::PreviewWindow* SnippetGroupAdhocCommand::FetchPreviewWindow()
+{
+	if (in->mBaseCommand->GetParam().mUsePreview == false) {
+		return nullptr;
+	}
+
+	// 実行時と同様にマクロを展開した内容をプレビューへ渡す
+	auto value = in->mItem.mText;
+	ExpandMacros(value);
+
+	auto previewWindow = launcherapp::commands::common::preview::PreviewWindow::Get();
+	previewWindow->SetPreviewText(value, CString(), {});
+	return previewWindow;
+}
+
 bool SnippetGroupAdhocCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
 {
 	if (AdhocCommandBase::QueryInterface(ifid, cmd)) {
@@ -94,6 +111,11 @@ bool SnippetGroupAdhocCommand::QueryInterface(const launcherapp::core::IFID& ifi
 	if (ifid == IFID_EXTRACANDIDATE) {
 		AddRef();
 		*cmd = (launcherapp::commands::core::ExtraCandidate*)this;
+		return true;
+	}
+	if (ifid == IFID_PREVIEWPROVIDER) {
+		AddRef();
+		*cmd = static_cast<launcherapp::core::PreviewProvider*>(this);
 		return true;
 	}
 	return false;

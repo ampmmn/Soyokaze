@@ -41,6 +41,11 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 private:
+	/**
+	  ホストのクライアント領域に合わせてプレビューウインドウをリサイズする
+	*/
+	void ResizePreviewWindow();
+
 	struct PImpl;
 	std::unique_ptr<PImpl> in;
 };

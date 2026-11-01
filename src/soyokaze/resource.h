@@ -155,7 +155,7 @@
 #define IDD_COMMAND_SHELLEXECUTE_ENVEDIT 253
 #define IDD_COMMAND_SHELLEXECUTE_ENVBULKADD 254
 #define IDD_APPSETTING_WINSCP           255
-#define IDD_CLIPBOARD_PREVIEW           256
+#define IDD_PREVIEW_WINDOW              256
 #define IDD_APPSETTING_BOOKMARK         257
 #define IDD_COMMAND_PYEXTENSION         258
 #define IDI_ICON2                       259
@@ -628,6 +628,7 @@
 #define IDD_APPSETTING_QRCODE           1265
 #define IDC_QRCODE_PREFIX               1266
 #define IDC_QRCODE_ERROR_LEVEL          1267
+#define IDC_CHECK1                      1268
 #define IDC_EDIT_GROUP_PATH             1300
 #define IDC_EDIT_GROUP_PARAM            1301
 #define IDC_EDIT_GROUP_WORKDIR          1302
@@ -650,7 +651,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        269
 #define _APS_NEXT_COMMAND_VALUE         32780
-#define _APS_NEXT_CONTROL_VALUE         1268
+#define _APS_NEXT_CONTROL_VALUE         1269
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

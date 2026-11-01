@@ -84,6 +84,7 @@ void SettingDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_STATIC_STATUSMSG, mMessage);
 	DDX_Text(pDX, IDC_EDIT_NAME, mParam.mName);
 	DDX_Text(pDX, IDC_EDIT_DESCRIPTION, mParam.mDescription);
+	DDX_Check(pDX, IDC_CHECK_PREVIEW, mParam.mUsePreview);
 	if (mCurItem) {
 		DDX_Text(pDX, IDC_EDIT_NAME2, mCurItem->mName);
 		DDX_Text(pDX, IDC_EDIT_DESCRIPTION2, mCurItem->mDescription);

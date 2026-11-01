@@ -2,6 +2,7 @@
 
 #include "commands/common/AdhocCommandBase.h"
 #include "commands/core/ExtraCandidateIF.h"
+#include "commands/core/PreviewProvider.h"
 #include <memory>
 
 namespace launcherapp {
@@ -13,7 +14,8 @@ class Item;
 
 class SnippetGroupAdhocCommand :
 	virtual	public launcherapp::commands::common::AdhocCommandBase,
-	virtual public launcherapp::commands::core::ExtraCandidate
+	virtual public launcherapp::commands::core::ExtraCandidate,
+	virtual public launcherapp::core::PreviewProvider
 {
 public:
 	SnippetGroupAdhocCommand(SnippetGroupCommand* baseCommand, const Item& item);
@@ -28,6 +30,9 @@ public:
 
 // ExtraCandidate
 	CString GetSourceName() override;
+
+// PreviewProvider
+	launcherapp::mainwindow::preview::PreviewWindow* FetchPreviewWindow() override;
 
 // UnknownIF
 	bool QueryInterface(const launcherapp::core::IFID& ifid, void** cmd) override;

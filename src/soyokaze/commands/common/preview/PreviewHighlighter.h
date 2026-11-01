@@ -3,9 +3,9 @@
 #include <string>
 #include <vector>
 
-namespace launcherapp { namespace commands { namespace clipboardhistory {
+namespace launcherapp { namespace commands { namespace common { namespace preview {
 
-struct ClipboardPreviewMatchRange
+struct PreviewMatchRange
 {
 	size_t mStart;
 	size_t mLength;
@@ -17,9 +17,9 @@ struct ClipboardPreviewMatchRange
   @param[in] keywords 検索キーワードのUTF-8文字列一覧
   @return キーワードが現れるUTF-8バイト範囲
 */
-std::vector<ClipboardPreviewMatchRange> FindClipboardPreviewMatchRanges(
+std::vector<PreviewMatchRange> FindPreviewMatchRanges(
 	const std::string& text,
 	const std::vector<std::string>& keywords
 );
 
-}}}
+}}}}

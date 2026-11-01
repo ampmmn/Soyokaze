@@ -1,7 +1,7 @@
 #include "pch.h"
-#include "ClipboardPreviewWindow.h"
+#include "PreviewWindow.h"
 #include "SharedHwnd.h"
-#include "commands/clipboardhistory/ClipboardPreviewHighlighter.h"
+#include "PreviewHighlighter.h"
 #include "commands/py_extension/ScintillaDLLLoader.h"
 #include "setting/AppPreference.h"
 #include "resource.h"
@@ -11,7 +11,7 @@
 #define new DEBUG_NEW
 #endif
 
-namespace launcherapp { namespace commands { namespace clipboardhistory {
+namespace launcherapp { namespace commands { namespace common { namespace preview {
 
 class PreviewDialog : public CDialog
 {
@@ -124,7 +124,7 @@ public:
 		edit->SendMessage(SCI_SETTEXT, 0, (LPARAM)textUtf8.c_str());
 		edit->SendMessage(SCI_SETINDICATORCURRENT, INDICATOR_CONTAINER, 0);
 		edit->SendMessage(SCI_INDICATORCLEARRANGE, 0, edit->SendMessage(SCI_GETLENGTH, 0, 0));
-		auto ranges = FindClipboardPreviewMatchRanges(textUtf8, keywordsUtf8);
+		auto ranges = FindPreviewMatchRanges(textUtf8, keywordsUtf8);
 		for (const auto& range : ranges) {
 			edit->SendMessage(SCI_INDICATORFILLRANGE, range.mStart, range.mLength);
 		}
@@ -136,7 +136,7 @@ public:
 public:
 	// 日付、サイズなど
 	CString mInfoText;
-	// クリップボードのプレビュー内容
+	// プレビュー内容
 	CString mPreviewText;
 	std::vector<CString> mKeywords;
 	CRect mInitialClientRect;
@@ -158,7 +158,6 @@ struct PreviewWindow::PImpl
 	bool Create();
 
 	PreviewDialog mWindow;
-	bool mIsEnable{true};
 	bool mIsDestroyed{false};
 };
 
@@ -170,7 +169,7 @@ bool PreviewWindow::PImpl::Create()
 
 	SharedHwnd mainWnd;
 	HWND priorFocus = ::GetFocus();
-	if (mWindow.Create(IDD_CLIPBOARD_PREVIEW, CWnd::FromHandle(mainWnd.GetHwnd())) == FALSE) {
+	if (mWindow.Create(IDD_PREVIEW_WINDOW, CWnd::FromHandle(mainWnd.GetHwnd())) == FALSE) {
 		return false;
 	}
 	mWindow.UpdateStyle();
@@ -203,7 +202,7 @@ PreviewWindow* PreviewWindow::Get()
 
 void PreviewWindow::Enter()
 {
-	if (in->mIsEnable == false || in->mIsDestroyed) {
+	if (in->mIsDestroyed) {
 		return;
 	}
 
@@ -235,14 +234,9 @@ HWND PreviewWindow::GetHwnd()
 	return in->mWindow.GetSafeHwnd();
 }
 
-void PreviewWindow::SetPreviewText(const CString& text, uint64_t date, const std::vector<CString>& keywords)
+void PreviewWindow::SetPreviewText(const CString& text, const CString& infoText, const std::vector<CString>& keywords)
 {
-	CTime tm(FILETIME{date & 0xFFFFFFFF, (date >> 32)});
-	auto s = tm.Format(_T("%c"));
-
-	std::locale loc("en_US.UTF-8");
-	auto sizeStr = std::format(loc, _T("{}"), text.GetLength());
-	in->mWindow.mInfoText.Format(_T("%s %s byte"), (LPCTSTR)s, sizeStr.c_str());
+	in->mWindow.mInfoText = infoText;
 	in->mWindow.mPreviewText = text;
 	in->mWindow.mKeywords = keywords;
 	if (in->mWindow.GetSafeHwnd()) {
@@ -262,23 +256,4 @@ void PreviewWindow::Destroy()
 	}
 }
 
-void PreviewWindow::SetEnable(bool isEnable)
-{
-	in->mIsEnable = isEnable;
-	if (isEnable == false) {
-		Leave();
-	}
-}
-
-void PreviewWindow::Disable()
-{
-	in->mIsEnable = false;
-	Leave();
-}
-
-bool PreviewWindow::IsEnable() const
-{
-	return in->mIsEnable && in->mIsDestroyed == false;
-}
-
-}}} // end of namespace launcherapp::commands::clipboardhistory
+}}}} // end of namespace launcherapp::commands::common::preview

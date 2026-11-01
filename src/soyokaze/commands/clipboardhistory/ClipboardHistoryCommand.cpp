@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "ClipboardHistoryCommand.h"
-#include "commands/clipboardhistory/ClipboardPreviewWindow.h"
+#include "commands/common/preview/PreviewWindow.h"
 #include "commands/common/Clipboard.h"
 #include "commands/common/CommandParameterFunctions.h"
 #include "core/IFIDDefine.h"
@@ -10,6 +10,8 @@
 #include "icon/IconLoader.h"
 #include "utility/StringUtil.h"
 #include "resource.h"
+#include <format>
+#include <locale>
 #include <vector>
 
 #ifdef _DEBUG
@@ -33,15 +35,17 @@ struct ClipboardHistoryCommand::PImpl
 	CString mPrefix;
 	CString mData;
 	std::vector<CString> mKeywords;
+	bool mUsePreview{false};
 };
 
 
 IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(ClipboardHistoryCommand)
 
 ClipboardHistoryCommand::ClipboardHistoryCommand(
- 	const CString& prefix,
+	const CString& prefix,
 	uint64_t appendDate,
 	const CString& data,
+	bool usePreview,
 	const std::vector<CString>& keywords
 ) : 
 	AdhocCommandBase(_T(""), _T("")),
@@ -51,6 +55,7 @@ ClipboardHistoryCommand::ClipboardHistoryCommand(
 	in->mPrefix = prefix;
 	in->mData = data;
 	in->mKeywords = keywords;
+	in->mUsePreview = usePreview;
 
 	FILETIME sysFt;
 	sysFt.dwHighDateTime = appendDate >> 32;
@@ -115,16 +120,24 @@ HICON ClipboardHistoryCommand::GetIcon()
 launcherapp::core::Command*
 ClipboardHistoryCommand::Clone()
 {
-	return new ClipboardHistoryCommand(in->mPrefix, in->mAppendDate, in->mData, in->mKeywords);
+	return new ClipboardHistoryCommand(in->mPrefix, in->mAppendDate, in->mData, in->mUsePreview, in->mKeywords);
 }
 
 launcherapp::mainwindow::preview::PreviewWindow* ClipboardHistoryCommand::FetchPreviewWindow()
 {
-	auto previewWindow = PreviewWindow::Get();
-	if (previewWindow->IsEnable() == false) {
+	if (in->mUsePreview == false) {
 		return nullptr;
 	}
-	previewWindow->SetPreviewText(in->mData, in->mAppendDate, in->mKeywords);
+
+	CTime tm(FILETIME{in->mAppendDate & 0xFFFFFFFF, (in->mAppendDate >> 32)});
+	auto dateText = tm.Format(_T("%c"));
+	std::locale loc("en_US.UTF-8");
+	auto sizeText = std::format(loc, _T("{}"), in->mData.GetLength());
+	CString infoText;
+	infoText.Format(_T("%s %s byte"), (LPCTSTR)dateText, sizeText.c_str());
+
+	auto previewWindow = launcherapp::commands::common::preview::PreviewWindow::Get();
+	previewWindow->SetPreviewText(in->mData, infoText, in->mKeywords);
 	return previewWindow;
 }
 

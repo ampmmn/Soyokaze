@@ -1,8 +1,8 @@
 #include "pch.h"
-#include "ClipboardPreviewHighlighter.h"
+#include "PreviewHighlighter.h"
 #include <algorithm>
 
-namespace launcherapp { namespace commands { namespace clipboardhistory {
+namespace launcherapp { namespace commands { namespace common { namespace preview {
 
 namespace {
 
@@ -20,12 +20,12 @@ bool IsSameCharacterIgnoreAsciiCase(unsigned char lhs, unsigned char rhs)
 
 }
 
-std::vector<ClipboardPreviewMatchRange> FindClipboardPreviewMatchRanges(
+std::vector<PreviewMatchRange> FindPreviewMatchRanges(
 	const std::string& text,
 	const std::vector<std::string>& keywords
 )
 {
-	std::vector<ClipboardPreviewMatchRange> ranges;
+	std::vector<PreviewMatchRange> ranges;
 	for (const auto& keyword : keywords) {
 		if (keyword.empty()) {
 			continue;
@@ -57,4 +57,4 @@ std::vector<ClipboardPreviewMatchRange> FindClipboardPreviewMatchRanges(
 	return ranges;
 }
 
-}}}
+}}}}

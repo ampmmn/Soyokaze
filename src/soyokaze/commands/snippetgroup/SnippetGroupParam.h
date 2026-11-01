@@ -33,6 +33,7 @@ public:
 	ItemList mItems;
 	CommandHotKeyAttribute mHotKeyAttr;
 	std::vector<uint8_t> mIconData;
+	bool mUsePreview{false};
 };
 
 }
