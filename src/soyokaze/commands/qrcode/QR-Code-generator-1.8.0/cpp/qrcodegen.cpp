@@ -786,8 +786,8 @@ bool QrCode::getBit(long x, int i) {
 
 const int QrCode::PENALTY_N1 =  3;
 const int QrCode::PENALTY_N2 =  3;
-const int QrCode::PENALTY_N3 = 40;
-const int QrCode::PENALTY_N4 = 10;
+const long QrCode::PENALTY_N3 = 40;
+const long QrCode::PENALTY_N4 = 10;
 
 
 const int8_t QrCode::ECC_CODEWORDS_PER_BLOCK[4][41] = {

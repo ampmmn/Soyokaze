@@ -494,8 +494,8 @@ class QrCode final {
 	// For use in getPenaltyScore(), when evaluating which mask is best.
 	private: static const int PENALTY_N1;
 	private: static const int PENALTY_N2;
-	private: static const int PENALTY_N3;
-	private: static const int PENALTY_N4;
+	private: static const long PENALTY_N3;
+	private: static const long PENALTY_N4;
 	
 	
 	private: static const std::int8_t ECC_CODEWORDS_PER_BLOCK[4][41];
