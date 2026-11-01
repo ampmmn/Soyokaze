@@ -772,6 +772,11 @@ void LauncherMainWindow::HandleQueryCompleted(launcherapp::commands::core::Comma
 			return;
 		}
 
+		if (in->mInput.HasKeyword()) {
+			// 候補更新通知で選択変更が同期的に発生する前に、候補表示サイズを復元する
+			in->mLayout->UpdateInputStatus(&in->mInput, false);
+		}
+
 		in->mCandidates.SetItems(commands);
 
 	}
