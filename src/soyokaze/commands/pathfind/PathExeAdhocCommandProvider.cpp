@@ -32,7 +32,7 @@ static CString EXE_EXT = _T(".exe");
 
 static const launcherapp::utility::Regex& GetURLRegex()
 {
-	static const launcherapp::utility::Regex reg(_T("https?://.+"));
+	static const launcherapp::utility::Regex reg(_T("^\\s*https?://.+"));
 	return reg;
 }
 
