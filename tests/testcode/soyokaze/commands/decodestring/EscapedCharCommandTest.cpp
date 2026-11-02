@@ -1,8 +1,28 @@
 #include "stdafx.h"
 #include "gtest/gtest.h"
 #include "commands/decodestring/EscapedCharCommand.h"
+#include "commands/core/PreviewProvider.h"
+#include "core/IFIDDefine.h"
+#include "matcher/WholeMatchPattern.h"
+#include "utility/RefPtr.h"
 
 using EscapedCharCommand = launcherapp::commands::decodestring::EscapedCharCommand;
+
+TEST(EscapedCharCommandTest, MatchProvidesDecodedPreview)
+{
+	EscapedCharCommand command;
+	auto pattern = WholeMatchPattern::Create(_T("hello\\u0020world"));
+	ASSERT_NE(nullptr, pattern);
+	EXPECT_EQ(Pattern::PartialMatch, command.Match(pattern));
+	pattern->Release();
+
+	EXPECT_EQ(_T("hello world"), command.GetName());
+
+	RefPtr<launcherapp::core::PreviewProvider> provider;
+	ASSERT_TRUE(command.QueryInterface(IFID_PREVIEWPROVIDER, (void**)&provider));
+	ASSERT_NE(nullptr, provider.get());
+	EXPECT_NE(nullptr, provider->FetchPreviewWindow());
+}
 
 TEST(EscapedCharCommand, ScanAsU4_1)
 {

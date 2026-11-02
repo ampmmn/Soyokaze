@@ -90,6 +90,8 @@
     <ClCompile Include="..\testcode\soyokaze\commands\everything\EverythingAdhocCommandTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\group\GroupCommandParamTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\plugin\PluginSettingsTest.cpp" />
+    <ClCompile Include="..\testcode\soyokaze\commands\decodestring\DecodeBase64CommandTest.cpp" />
+    <ClCompile Include="..\testcode\soyokaze\commands\decodestring\DecodeUriCommandTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\decodestring\EscapedCharCommandTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\explorepath\ExplorePathFileCacheTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\snippetgroup\SnippetGroupParamTest.cpp" />

@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "framework.h"
 #include "DecodeUriCommand.h"
+#include "commands/common/preview/PreviewWindow.h"
+#include "core/IFIDDefine.h"
 #include "icon/IconLoader.h"
 #include "commands/common/Clipboard.h"
 #include "actions/clipboard/CopyClipboardAction.h"
@@ -84,6 +86,26 @@ launcherapp::core::Command*
 DecodeUriCommand::Clone()
 {
 	return new DecodeUriCommand();
+}
+
+launcherapp::mainwindow::preview::PreviewWindow* DecodeUriCommand::FetchPreviewWindow()
+{
+	auto previewWindow = launcherapp::commands::common::preview::PreviewWindow::Get();
+	previewWindow->SetPreviewText(mName, CString(), {});
+	return previewWindow;
+}
+
+bool DecodeUriCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
+{
+	if (AdhocCommandBase::QueryInterface(ifid, cmd)) {
+		return true;
+	}
+	if (ifid == IFID_PREVIEWPROVIDER) {
+		AddRef();
+		*cmd = static_cast<launcherapp::core::PreviewProvider*>(this);
+		return true;
+	}
+	return false;
 }
 
 CString DecodeUriCommand::TypeDisplayName()
