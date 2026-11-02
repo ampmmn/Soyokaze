@@ -308,18 +308,21 @@ void CandidateListCtrl::OnUpdateItems(void* sender)
 		in->mRenderer->SetIsEmpty(in->mIsEmpty);
 	}
 
-  // リスト項目が空になった場合はスクロール位置を強制的にいったん先頭に戻す
-  if (in->mIsEmpty) {
-    EnsureVisible(0, FALSE);
-  }
-
 	SetItemCountEx(in->mIsEmpty ? 1 : count);
+
+	CRect rcItem;
+	GetItemRect(0, &rcItem, LVIR_BOUNDS);
+
+	// TopIndexが負の値になった場合は元にも戻すためのスクロールを行う(#338)
+	int topIndex = GetTopIndex();
+	if (topIndex < 0) {
+		Scroll(CSize(0, rcItem.Height() * (-topIndex)));
+	}
+
 	if (count > 0) {
 		SetItemState(0, LVIS_SELECTED, LVIS_SELECTED);
 
 		// 選択項目が可視領域に収まるようにする
-		CRect rcItem;
-		GetItemRect(0, &rcItem, LVIR_BOUNDS);
 		CSize sizeScroll(0, -rcItem.Height() * count);
 		Scroll(sizeScroll);
 		// Note: EnsureVisible(0, FALSE)の場合、アプリ起動後1回目の表示のときだけ
