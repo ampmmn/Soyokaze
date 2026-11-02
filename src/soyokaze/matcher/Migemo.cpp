@@ -10,6 +10,13 @@
 
 using CharConverter = launcherapp::utility::CharConverter;
 
+namespace {
+
+// Queryに渡す文字列長の上限値
+constexpr size_t MaxMigemoQueryLength = 1024;
+
+}
+
 // C/MigemoのAPI
 typedef void* (*MIGEMO_OPEN)(const char*);
 typedef void* (*MIGEMO_OPEN_SDICT)(const char*);
@@ -250,6 +257,10 @@ void Migemo::Close()
 const CString& Migemo::Query(const CString& queryStr, CString& expression)
 {
 	if (in->mIsDictLoaded == false) {
+		return queryStr;
+	}
+	// 長すぎる入力は拒否
+	if (queryStr.GetLength() > MaxMigemoQueryLength) {
 		return queryStr;
 	}
 
