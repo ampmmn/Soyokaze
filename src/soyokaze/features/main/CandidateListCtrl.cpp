@@ -307,6 +307,12 @@ void CandidateListCtrl::OnUpdateItems(void* sender)
 	if (in->mRenderer) {
 		in->mRenderer->SetIsEmpty(in->mIsEmpty);
 	}
+
+  // リスト項目が空になった場合はスクロール位置を強制的にいったん先頭に戻す
+  if (in->mIsEmpty) {
+    EnsureVisible(0, FALSE);
+  }
+
 	SetItemCountEx(in->mIsEmpty ? 1 : count);
 	if (count > 0) {
 		SetItemState(0, LVIS_SELECTED, LVIS_SELECTED);
