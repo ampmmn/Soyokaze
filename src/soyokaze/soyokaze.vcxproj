@@ -142,11 +142,11 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <RunCodeAnalysis>true</RunCodeAnalysis>
-    <OutDir>$(SolutionDir)..\dist\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(ProjectDir)..\..\dist\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='UnitTest|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)..\dist\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(ProjectDir)..\..\dist\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -160,11 +160,11 @@
     <LinkIncremental>false</LinkIncremental>
     <ClangTidyChecks>clang-analyzer-*, readability-identifier-naming.*</ClangTidyChecks>
     <RunCodeAnalysis>true</RunCodeAnalysis>
-    <OutDir>$(SolutionDir)..\dist\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(ProjectDir)..\..\dist\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseStatic|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)..\dist\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(ProjectDir)..\..\dist\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -222,7 +222,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>LEXBOR_STATIC;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)sandshook/include;$(SolutionDir)python_proxy/include;$(SolutionDir)../externals/json/include;$(SolutionDir)../externals/spdlog/include;$(SolutionDir)../externals/lexbor/source;$(SolutionDir)../externals/re2/build/install/include;$(SolutionDir)../externals/abseil-cpp/build/install/include;$(SolutionDir)../externals/scintilla/include;$(SolutionDir)../externals/lexilla/include;$(SolutionDir)../externals/simdutf/include;$(SolutionDir)../externals/rapidyaml/include;$(SolutionDir)../externals/lunasvg/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)..\sandshook/include;$(ProjectDir)..\python_proxy/include;$(ProjectDir)..\..\externals/json/include;$(ProjectDir)..\..\externals/spdlog/include;$(ProjectDir)..\..\externals/lexbor/source;$(ProjectDir)..\..\externals/re2/build/install/include;$(ProjectDir)..\..\externals/abseil-cpp/build/install/include;$(ProjectDir)..\..\externals/scintilla/include;$(ProjectDir)..\..\externals/lexilla/include;$(ProjectDir)..\..\externals/simdutf/include;$(ProjectDir)..\..\externals/rapidyaml/include;$(ProjectDir)..\..\externals/lunasvg/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -230,7 +230,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>$(SolutionDir)../externals/spdlog/build/Release;$(SolutionDir)../externals/lexbor/build/Debug;$(SolutionDir)../externals/re2/build/install/lib;$(SolutionDir)../externals/abseil-cpp/build/install/lib;$(SolutionDir)../externals/simdutf/build/src/Debug;$(SolutionDir)../externals/lunasvg/build/$(Configuration);$(SolutionDir)../externals/lunasvg/build/plutovg/$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\..\externals/spdlog/build/Release;$(ProjectDir)..\..\externals/lexbor/build/Debug;$(ProjectDir)..\..\externals/re2/build/install/lib;$(ProjectDir)..\..\externals/abseil-cpp/build/install/lib;$(ProjectDir)..\..\externals/simdutf/build/src/Debug;$(ProjectDir)..\..\externals/lunasvg/build/$(Configuration);$(ProjectDir)..\..\externals/lunasvg/build/plutovg/$(Configuration)</AdditionalLibraryDirectories>
       <AdditionalDependencies>runtimeobject.lib;spdlog.lib;lexbor_static.lib;re2_d.lib;absl_all_d.lib;simdutf.lib;lunasvg.lib;plutovg.lib</AdditionalDependencies>
     </Link>
     <Midl>
@@ -252,7 +252,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>LEXBOR_STATIC;SOYOKAZE_UNITTEST;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)sandshook/include;$(SolutionDir)python_proxy/include;$(SolutionDir)../externals/json/include;$(SolutionDir)../externals/spdlog/include;$(SolutionDir)../externals/lexbor/source;$(SolutionDir)../externals/re2/build/install/include;$(SolutionDir)../externals/abseil-cpp/build/install/include;$(SolutionDir)../externals/scintilla/include;$(SolutionDir)../externals/lexilla/include;$(SolutionDir)../externals/simdutf/include;$(SolutionDir)../externals/rapidyaml/include;$(SolutionDir)../externals/lunasvg/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)..\sandshook/include;$(ProjectDir)..\python_proxy/include;$(ProjectDir)..\..\externals/json/include;$(ProjectDir)..\..\externals/spdlog/include;$(ProjectDir)..\..\externals/lexbor/source;$(ProjectDir)..\..\externals/re2/build/install/include;$(ProjectDir)..\..\externals/abseil-cpp/build/install/include;$(ProjectDir)..\..\externals/scintilla/include;$(ProjectDir)..\..\externals/lexilla/include;$(ProjectDir)..\..\externals/simdutf/include;$(ProjectDir)..\..\externals/rapidyaml/include;$(ProjectDir)..\..\externals/lunasvg/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -338,7 +338,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>LEXBOR_STATIC;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)sandshook/include;$(SolutionDir)python_proxy/include;$(SolutionDir)../externals/json/include;$(SolutionDir)../externals/spdlog/include;$(SolutionDir)../externals/lexbor/source;$(SolutionDir)../externals/re2/build/install/include;$(SolutionDir)../externals/abseil-cpp/build/install/include;$(SolutionDir)../externals/scintilla/include;$(SolutionDir)../externals/lexilla/include;$(SolutionDir)../externals/simdutf/include;$(SolutionDir)../externals/rapidyaml/include;$(SolutionDir)../externals/lunasvg/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)..\sandshook/include;$(ProjectDir)..\python_proxy/include;$(ProjectDir)..\..\externals/json/include;$(ProjectDir)..\..\externals/spdlog/include;$(ProjectDir)..\..\externals/lexbor/source;$(ProjectDir)..\..\externals/re2/build/install/include;$(ProjectDir)..\..\externals/abseil-cpp/build/install/include;$(ProjectDir)..\..\externals/scintilla/include;$(ProjectDir)..\..\externals/lexilla/include;$(ProjectDir)..\..\externals/simdutf/include;$(ProjectDir)..\..\externals/rapidyaml/include;$(ProjectDir)..\..\externals/lunasvg/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -348,7 +348,7 @@
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(SolutionDir)../externals/spdlog/build/Release;$(SolutionDir)../externals/lexbor/build/Release;$(SolutionDir)../externals/re2/build/install/lib;$(SolutionDir)../externals/abseil-cpp/build/install/lib;$(SolutionDir)../externals/simdutf/build/src/Release;$(SolutionDir)../externals/lunasvg/build/$(Configuration);$(SolutionDir)../externals/lunasvg/build/plutovg/$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\..\externals/spdlog/build/Release;$(ProjectDir)..\..\externals/lexbor/build/Release;$(ProjectDir)..\..\externals/re2/build/install/lib;$(ProjectDir)..\..\externals/abseil-cpp/build/install/lib;$(ProjectDir)..\..\externals/simdutf/build/src/Release;$(ProjectDir)..\..\externals/lunasvg/build/$(Configuration);$(ProjectDir)..\..\externals/lunasvg/build/plutovg/$(Configuration)</AdditionalLibraryDirectories>
       <AdditionalDependencies>runtimeobject.lib;spdlog.lib;lexbor_static.lib;simdutf.lib;re2.lib;absl_all.lib;lunasvg.lib;plutovg.lib</AdditionalDependencies>
     </Link>
     <Midl>
@@ -372,7 +372,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>LEXBOR_STATIC;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)sandshook/include;$(SolutionDir)python_proxy/include;$(SolutionDir)../externals/json/include;$(SolutionDir)../externals/spdlog/include;$(SolutionDir)../externals/lexbor/source;$(SolutionDir)../externals/re2/build/install/include;$(SolutionDir)../externals/abseil-cpp/build/install/include;$(SolutionDir)../externals/scintilla/include;$(SolutionDir)../externals/lexilla/include;$(SolutionDir)../externals/simdutf/include;$(SolutionDir)../externals/rapidyaml/include;$(SolutionDir)../externals/lunasvg/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)..\sandshook/include;$(ProjectDir)..\python_proxy/include;$(ProjectDir)..\..\externals/json/include;$(ProjectDir)..\..\externals/spdlog/include;$(ProjectDir)..\..\externals/lexbor/source;$(ProjectDir)..\..\externals/re2/build/install/include;$(ProjectDir)..\..\externals/abseil-cpp/build/install/include;$(ProjectDir)..\..\externals/scintilla/include;$(ProjectDir)..\..\externals/lexilla/include;$(ProjectDir)..\..\externals/simdutf/include;$(ProjectDir)..\..\externals/rapidyaml/include;$(ProjectDir)..\..\externals/lunasvg/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -383,7 +383,7 @@
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(SolutionDir)../externals/spdlog/build/Release;$(SolutionDir)../externals/lexbor/build-static/Release;$(SolutionDir)../externals/re2/build/install/lib;$(SolutionDir)../externals/abseil-cpp/build/install/lib;$(SolutionDir)../externals/simdutf/build/src/Release;$(SolutionDir)../externals/lunasvg/build-static/Release;$(SolutionDir)../externals/lunasvg/build-static/plutovg/Release</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\..\externals/spdlog/build/Release;$(ProjectDir)..\..\externals/lexbor/build-static/Release;$(ProjectDir)..\..\externals/re2/build/install/lib;$(ProjectDir)..\..\externals/abseil-cpp/build/install/lib;$(ProjectDir)..\..\externals/simdutf/build/src/Release;$(ProjectDir)..\..\externals/lunasvg/build-static/Release;$(ProjectDir)..\..\externals/lunasvg/build-static/plutovg/Release</AdditionalLibraryDirectories>
       <AdditionalDependencies>runtimeobject.lib;spdlog.lib;lexbor_static.lib;simdutfrtst.lib;re2rtst.lib;absl_allrtst.lib;lunasvg.lib;plutovg.lib</AdditionalDependencies>
     </Link>
     <Midl>

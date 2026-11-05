@@ -37,7 +37,7 @@
   <ItemGroup>
     <ClCompile Include="..\testcode\python_modules\key\VKScannerTest.cpp" />
     <ClCompile Include="..\testcode\launcher_proxy\NormalPriviledgeRequestBufferTest.cpp">
-      <AdditionalIncludeDirectories>$(SolutionDir)launcher_proxy;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\src\launcher_proxy;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <ClCompile Include="..\..\src\launcher_proxy\NormalPriviledgeRequestBuffer.cpp">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
@@ -257,11 +257,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)..\dist\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(ProjectDir)..\..\dist\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseStatic|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)..\dist\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(ProjectDir)..\..\dist\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
@@ -271,11 +271,11 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)..\dist\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(ProjectDir)..\..\dist\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='UnitTest|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)..\dist\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(ProjectDir)..\..\dist\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -357,7 +357,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Soyokaze;$(ProjectDir)../googletest/googletest/include;$(ProjectDir)../googletest/googlemock/include;$(SolutionDir)json/include;$(SolutionDir)spdlog/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)..\..\src\Soyokaze;$(ProjectDir)../googletest/googletest/include;$(ProjectDir)../googletest/googlemock/include;$(ProjectDir)..\..\src\json/include;$(ProjectDir)..\..\src\spdlog/include</AdditionalIncludeDirectories>
       <AdditionalOptions>/source-charset:utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
@@ -392,7 +392,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>SOYOKAZE_UNITTEST;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)soyokaze;$(SolutionDir)python_modules/key;$(ProjectDir)../googletest/googletest/include;$(ProjectDir)../googletest/googlemock/include;$(ProjectDir)../testcode;$(SolutionDir)../externals/json/include;$(SolutionDir)../externals/spdlog/include;$(SolutionDir)../externals/fmt/include;$(SolutionDir)../externals/re2/build/install/include;$(SolutionDir)../externals/abseil-cpp/build/install/include;$(SolutionDir)../externals/scintilla/include;$(SolutionDir)../externals/lexilla/include;$(SolutionDir)../externals/rapidyaml/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)..\..\src\soyokaze;$(ProjectDir)..\..\src\python_modules\key;$(ProjectDir)../googletest/googletest/include;$(ProjectDir)../googletest/googlemock/include;$(ProjectDir)../testcode;$(ProjectDir)..\..\externals/json/include;$(ProjectDir)..\..\externals/spdlog/include;$(ProjectDir)..\..\externals/fmt/include;$(ProjectDir)..\..\externals/re2/build/install/include;$(ProjectDir)..\..\externals/abseil-cpp/build/install/include;$(ProjectDir)..\..\externals/scintilla/include;$(ProjectDir)..\..\externals/lexilla/include;$(ProjectDir)..\..\externals/rapidyaml/include</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -400,7 +400,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(OutputPath);%(AdditionalLibraryDirectories);$(SolutionDir)../externals/spdlog/build/Release;$(SolutionDir)../externals/lexbor/build/Debug;$(SolutionDir)../externals/re2/build/install/lib;$(SolutionDir)../externals/abseil-cpp/build/install/lib;$(SolutionDir)../externals/simdutf/build/src/Debug;$(SolutionDir)../externals/lunasvg/build/Debug;$(SolutionDir)../externals/lunasvg/build/plutovg/Debug</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OutputPath);%(AdditionalLibraryDirectories);$(ProjectDir)..\..\externals/spdlog/build/Release;$(ProjectDir)..\..\externals/lexbor/build/Debug;$(ProjectDir)..\..\externals/re2/build/install/lib;$(ProjectDir)..\..\externals/abseil-cpp/build/install/lib;$(ProjectDir)..\..\externals/simdutf/build/src/Debug;$(ProjectDir)..\..\externals/lunasvg/build/Debug;$(ProjectDir)..\..\externals/lunasvg/build/plutovg/Debug</AdditionalLibraryDirectories>
       <AdditionalDependencies>runtimeobject.lib;soyokaze.lib;key.lib;googletest.lib;spdlog.lib;lexbor_static.lib;re2_d.lib;absl_all_d.lib;simdutf.lib;lunasvg.lib;plutovg.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>

@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## Changed
+
+- #342 プロジェクト設定で変数$(SolutionDir)を使用している箇所を$(ProjectDir)に置き換える
+
 ## Fixed
 
 - #341 explorerマクロを展開すると二重引用符が3つ付与される
