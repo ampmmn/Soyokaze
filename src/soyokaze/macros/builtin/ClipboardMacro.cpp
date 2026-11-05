@@ -21,9 +21,10 @@ ClipboardMacro::~ClipboardMacro()
 {
 }
 
-bool ClipboardMacro::Evaluate(const std::vector<CString>& args, CString& result)
+bool ClipboardMacro::Evaluate(const std::vector<CString>& args, std::vector<CString>& results)
 {
 	UNREFERENCED_PARAMETER(args);
+	results.clear();
 
 	SharedHwnd sharedHwnd;
 	HWND hwnd = sharedHwnd.GetHwnd();
@@ -40,7 +41,7 @@ bool ClipboardMacro::Evaluate(const std::vector<CString>& args, CString& result)
 	HANDLE h = GetClipboardData(CF_UNICODETEXT);
 	LPCTSTR p = (LPCTSTR)GlobalLock(h);
 
-	result = p;
+	results.push_back(p);
 
 	GlobalUnlock(h);
 	CloseClipboard();

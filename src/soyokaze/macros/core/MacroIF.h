@@ -13,7 +13,8 @@ public:
 
 	virtual CString GetName() = 0;
 	virtual CString GetDescription() = 0;
-	virtual bool Evaluate(const std::vector<CString>& args, CString& result) = 0;
+	// 評価結果を0個以上の値として返す。
+	virtual bool Evaluate(const std::vector<CString>& args, std::vector<CString>& results) = 0;
 
 	virtual uint32_t AddRef() = 0;
 	virtual uint32_t Release() = 0;

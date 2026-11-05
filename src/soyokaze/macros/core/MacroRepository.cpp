@@ -14,26 +14,36 @@ namespace core {
 
 namespace {
 
-// マクロの展開結果は必要に応じてクォートして返す
+// マクロの展開結果を必要に応じてクォートして連結する
 // @param[in] text 解析対象の文字列
 // @param[in] startPos マクロの記述の開始位置
 // @param[in] endPos マクロの記述の終了位置の次
-// @param[in] value マクロの展開結果
+// @param[in] values マクロの展開結果
 // @param[in] quoteValues クォートするかどうか
-// @return 必要に応じてクォートされた文字列
-CString FormatMacroValue(const CString& text, int startPos, int endPos, const CString& value, bool quoteValues)
+// @return 必要に応じて各要素をクォートして連結した文字列
+CString FormatMacroValues(const CString& text, int startPos, int endPos, const std::vector<CString>& values, bool quoteValues)
 {
-	if (quoteValues == false || value.IsEmpty()) {
-		return value;
-	}
-
 	// マクロの記述がダブルクォートで囲まれている場合は内側だけエスケープする
 	bool isQuoted = (startPos > 0) && (endPos < text.GetLength()) &&
 		(text[startPos - 1] == _T('"')) && (text[endPos] == _T('"'));
-	if (isQuoted) {
-		return launcherapp::utility::EscapeArgumentValue(value);
+
+	CString result;
+	for (size_t i = 0; i < values.size(); ++i) {
+		if (i != 0) {
+			result += _T(" ");
+		}
+
+		if (quoteValues == false) {
+			result += values[i];
+		}
+		else if (isQuoted) {
+			result += launcherapp::utility::EscapeArgumentValue(values[i]);
+		}
+		else {
+			result += launcherapp::utility::QuoteArgument(values[i]);
+		}
 	}
-	return launcherapp::utility::QuoteArgument(value);
+	return result;
 }
 
 } // namespace
@@ -175,12 +185,12 @@ bool MacroRepository::Evaluate(CString& text, bool quoteValues)
 				}
 
 				// $xxx 形式のマクロを呼び出す
-				CString macroValue;
+				std::vector<CString> macroValues;
 
 				std::vector<CString> emptyArg;
-				macro->Evaluate(emptyArg, macroValue);
+				macro->Evaluate(emptyArg, macroValues);
 
-				output += FormatMacroValue(text, macroStartPos, token.GetPos(), macroValue, quoteValues);
+				output += FormatMacroValues(text, macroStartPos, token.GetPos(), macroValues, quoteValues);
 				continue;
 			}
 
@@ -218,10 +228,10 @@ bool MacroRepository::Evaluate(CString& text, bool quoteValues)
 			}
 
 			// ${xxx} 形式のマクロを呼び出す
-			CString macroValue;
-			macro->Evaluate(args, macroValue);
+			std::vector<CString> macroValues;
+			macro->Evaluate(args, macroValues);
 
-			output += FormatMacroValue(text, macroStartPos, token.GetPos(), macroValue, quoteValues);
+			output += FormatMacroValues(text, macroStartPos, token.GetPos(), macroValues, quoteValues);
 		}
 
 		text = output;

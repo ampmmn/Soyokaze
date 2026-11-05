@@ -20,8 +20,10 @@ EnvMacro::~EnvMacro()
 {
 }
 
-bool EnvMacro::Evaluate(const std::vector<CString>& args, CString& result)
+bool EnvMacro::Evaluate(const std::vector<CString>& args, std::vector<CString>& results)
 {
+	results.clear();
+
 	if (args.size() == 0) {
 		return false;
 	}
@@ -34,10 +36,12 @@ bool EnvMacro::Evaluate(const std::vector<CString>& args, CString& result)
 		return false;
 	}
 
+	CString result;
 	TCHAR* p = result.GetBuffer((int)reqLen);
 	_tgetenv_s(&reqLen, p, reqLen, valName);
 	result.ReleaseBuffer();
 
+	results.push_back(result);
 	return true;
 }
 

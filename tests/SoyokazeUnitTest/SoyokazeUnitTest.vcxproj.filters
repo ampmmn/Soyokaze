@@ -183,6 +183,9 @@
     <ClCompile Include="..\testcode\soyokaze\macros\core\TokenTest.cpp">
       <Filter>soyokaze\macros\core</Filter>
     </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\macros\core\MacroRepositoryTest.cpp">
+      <Filter>soyokaze\macros\core</Filter>
+    </ClCompile>
     <ClCompile Include="..\testcode\soyokaze\hotkey\HotKeyAttributeTest.cpp">
       <Filter>soyokaze\hotkey</Filter>
     </ClCompile>

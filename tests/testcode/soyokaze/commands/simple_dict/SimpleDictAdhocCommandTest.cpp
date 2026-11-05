@@ -25,11 +25,12 @@ public:
 		return _T("");
 	}
 
-	bool Evaluate(const std::vector<CString>& args, CString& result) override
+	bool Evaluate(const std::vector<CString>& args, std::vector<CString>& results) override
 	{
 		UNREFERENCED_PARAMETER(args);
 		++mEvaluateCount;
-		result = _T("expanded");
+		results.clear();
+		results.push_back(_T("expanded"));
 		return true;
 	}
 

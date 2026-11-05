@@ -23,8 +23,10 @@ RandomMacro::~RandomMacro()
 {
 }
 
-bool RandomMacro::Evaluate(const std::vector<CString>& args, CString& result)
+bool RandomMacro::Evaluate(const std::vector<CString>& args, std::vector<CString>& results)
 {
+	results.clear();
+
 	if (args.size() == 0) {
 		return false;
 	}
@@ -44,7 +46,7 @@ bool RandomMacro::Evaluate(const std::vector<CString>& args, CString& result)
 			return false;
 		}
 
-		result = (const wchar_t*)strUuid;
+		results.push_back((const wchar_t*)strUuid);
 
 		RpcStringFree(&strUuid);
 

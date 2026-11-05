@@ -62,13 +62,15 @@ int DateMacro::ComputeDayFromMonth(int offset, CTime tmToday)
 	return days + ComputeDayFromYear(years, tmToday);
 }
 
-bool DateMacro::Evaluate(const std::vector<CString>& args, CString& result)
+bool DateMacro::Evaluate(const std::vector<CString>& args, std::vector<CString>& results)
 {
+	results.clear();
+
 	CTime tmCur(CTime::GetCurrentTime());
 
 	if (args.size() == 0) {
 		// YYYY-mm-dd HH:MM:ss
-		result = tmCur.Format(_T("%X"));
+		results.push_back(tmCur.Format(_T("%X")));
 		return true;
 	}
 
@@ -81,7 +83,7 @@ bool DateMacro::Evaluate(const std::vector<CString>& args, CString& result)
 		// フォーマット
 		try {
 			auto fmt = args[0];
-			result = tmCur.Format(fmt);
+			results.push_back(tmCur.Format(fmt));
 			return true;
 		}
 		catch (...) {

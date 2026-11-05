@@ -20,8 +20,10 @@ PowerStatusMacro::~PowerStatusMacro()
 {
 }
 
-bool PowerStatusMacro::Evaluate(const std::vector<CString>& args, CString& result)
+bool PowerStatusMacro::Evaluate(const std::vector<CString>& args, std::vector<CString>& results)
 {
+	results.clear();
+
 	if (args.size() == 0) {
 		return false;
 	}
@@ -58,7 +60,7 @@ bool PowerStatusMacro::Evaluate(const std::vector<CString>& args, CString& resul
 		}
 		fmt.Replace(_T("%a"), val);
 	}
-	result = fmt;
+	results.push_back(fmt);
 	return true;
 }
 

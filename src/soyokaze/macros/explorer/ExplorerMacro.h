@@ -10,10 +10,10 @@ class ExplorerMacro : public launcherapp::macros::core::MacroBase
 	virtual ~ExplorerMacro();
 
 public:
-	bool Evaluate(const std::vector<CString>& args, CString& result) override;
+	bool Evaluate(const std::vector<CString>& args, std::vector<CString>& results) override;
 
-	bool ExpandLocationPath(const std::vector<CString>& args, CString& result);
-	bool ExpandSelectionPath(const std::vector<CString>& args, CString& result);
+	bool ExpandLocationPath(const std::vector<CString>& args, std::vector<CString>& results);
+	bool ExpandSelectionPath(const std::vector<CString>& args, std::vector<CString>& results);
 
 	DECLARE_LAUNCHERMACRO(ExplorerMacro)
 };

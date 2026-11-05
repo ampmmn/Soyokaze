@@ -22,14 +22,17 @@ AppNameMacro::~AppNameMacro()
 {
 }
 
-bool AppNameMacro::Evaluate(const std::vector<CString>& args, CString& result)
+bool AppNameMacro::Evaluate(const std::vector<CString>& args, std::vector<CString>& results)
 {
+	results.clear();
+
 	if (args.size() == 0) {
-		result = APPNAME;
+		results.push_back(APPNAME);
 		return true;
 	}
 
 	CString param = args[0];
+	CString result;
 	if (param == _T("name")) {
 		result = APPNAME;
 	}
@@ -50,7 +53,7 @@ bool AppNameMacro::Evaluate(const std::vector<CString>& args, CString& result)
 		result = tmBuildDate.Format(_T("%T"));
 	}
 
-
+	results.push_back(result);
 	return true;
 }
 

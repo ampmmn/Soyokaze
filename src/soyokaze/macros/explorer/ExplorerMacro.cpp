@@ -24,8 +24,10 @@ ExplorerMacro::~ExplorerMacro()
 {
 }
 
-bool ExplorerMacro::Evaluate(const std::vector<CString>& args, CString& result)
+bool ExplorerMacro::Evaluate(const std::vector<CString>& args, std::vector<CString>& results)
 {
+	results.clear();
+
 	if (args.size() == 0) {
 		return false;
 	}
@@ -33,15 +35,15 @@ bool ExplorerMacro::Evaluate(const std::vector<CString>& args, CString& result)
 	CString command = args[0];
 
 	if (command.CompareNoCase(_T("location_path")) == 0) {
-		return ExpandLocationPath(args, result);
+		return ExpandLocationPath(args, results);
 	}
 	else if (command.CompareNoCase(_T("selection_path")) == 0) {
-		return ExpandSelectionPath(args, result);
+		return ExpandSelectionPath(args, results);
 	}
 	return false;
 }
 
-bool ExplorerMacro::ExpandLocationPath(const std::vector<CString>& args, CString& result)
+bool ExplorerMacro::ExpandLocationPath(const std::vector<CString>& args, std::vector<CString>& results)
 {
 	UNREFERENCED_PARAMETER(args);
 
@@ -70,17 +72,12 @@ bool ExplorerMacro::ExpandLocationPath(const std::vector<CString>& args, CString
 	std::wstring ret_path;
 	UTF2UTF((const std::string)json_res["path"], ret_path);
 
-	std::wstring path;
-	path += _T("\"");
-	path += ret_path;
-	path += _T("\"");
-
-	result = path.c_str();
+	results.emplace_back(ret_path.c_str());
 
 	return true;
 }
 
-bool ExplorerMacro::ExpandSelectionPath(const std::vector<CString>& args, CString& result)
+bool ExplorerMacro::ExpandSelectionPath(const std::vector<CString>& args, std::vector<CString>& results)
 {
 	int index = -1;
 	if (args.size() > 1) {
@@ -89,8 +86,6 @@ bool ExplorerMacro::ExpandSelectionPath(const std::vector<CString>& args, CStrin
 
 	// 管理者権限でアプリを実行していると、通常権限で実行しているインスタンスのAPI呼び出しに失敗する
 	// launcher_proxy.exeを経由することにより、常に通常権限で実行されるようにする。
-
-	std::wstring path;
 
 	json json_req;
 	json_req["command"] = "getexplorerselectiondir";
@@ -109,18 +104,12 @@ bool ExplorerMacro::ExpandSelectionPath(const std::vector<CString>& args, CStrin
 		spdlog::error("unexpected response.");
 		return false;
 	}
-	std::wstring tmp;
-
 	auto items = json_res["items"];
 	for (auto& item : items) {
+		std::wstring tmp;
 		auto& ret_path = UTF2UTF(item["path"].get<std::string>(), tmp);
-
-		path += path.empty() ? _T("\"") : _T(" \"");
-		path += ret_path;
-		path += _T("\"");
+		results.emplace_back(ret_path.c_str());
 	}
-
-	result = path.c_str();
 
 	return true;
 }

@@ -23,7 +23,7 @@ public:
 
 	// 文字列を解析して置換する
 	// @param[in,out] text 解析する文字列
-	// @param[in] quoteValues マクロの展開結果をクォートするかどうか
+	// @param[in] quoteValues マクロの展開結果の各要素をクォートするかどうか
 	// @return 置換に成功した場合true
 	bool Evaluate(CString& text, bool quoteValues = false);
 

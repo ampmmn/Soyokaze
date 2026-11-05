@@ -71,8 +71,10 @@ bool AfxWWrapper::SetCurrentDir(const std::wstring& path)
 }
 
 // あふの自窓の選択ファイルパスを取得
-bool AfxWWrapper::GetSelectionPath(std::wstring& path, int index)
+bool AfxWWrapper::GetSelectionPath(std::vector<std::wstring>& paths, int index)
 {
+	paths.clear();
+
 	json json_req;
 	json_req["command"] = "getafxselectionpath";
 	json_req["index"] = index;
@@ -95,10 +97,7 @@ bool AfxWWrapper::GetSelectionPath(std::wstring& path, int index)
 	auto items = json_res["items"];
 	for (auto& item : items) {
 		auto& ret_path = UTF2UTF(item["path"].get<std::string>(), tmp);
-
-		path += path.empty() ? _T("\"") : _T(" \"");
-		path += ret_path;
-		path += _T("\"");
+		paths.push_back(ret_path);
 	}
 
 	return true;

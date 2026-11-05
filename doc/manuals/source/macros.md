@@ -231,25 +231,36 @@ ${env USERNAME}
 `index`を指定した場合、`index`番目のパスに置き換える(0～)。  
 `index`を指定しなかった場合、選択中のすべての要素に置き換える。
 
-- 該当する要素が存在しない場合は空文字列に置換される
+- 該当する要素が存在しない場合は展開結果が空になる
   - 例: エクスプローラを開いていない、ファイルを選択していない、等
 - 表示中のエクスプローラのウインドウが複数ある場合は、最も前面にあるウインドウの情報を取得する。
 
+このマクロはパスを引用符で囲まずに返す。通常コマンドのパラメータでは、展開時にパスごとに引用符が付与される。パラメータ以外の用途では、複数パスは空白区切りで展開される。
+通常コマンドのパラメータで使う場合は、マクロ記述の外側を引用符で囲まないこと。
+また、選択中のすべての要素に展開する場合は、複数のパラメータに展開されるため、マクロ記述の前後を空白で区切り、単独の項目として記述すること。
+
+通常コマンドのパラメータに記述する例:
+
+```
+/c echo ${explorer selection_path} && pause
+```
+
+選択中の各パスは、コマンドライン上で個別に引用符で囲まれる。
 
 ### Example
 
 ```
 # エクスプローラで現在表示しているフォルダパスを取得する
 ${explorer location_path}
- → "C:\Program Files(x86)"
+ → C:\Program Files(x86)
 
 # エクスプローラで選択している一つ目のファイルパスを取得する
 ${explorer selection_path 0}
- → "C:\Users\usename\AppData\Local\Microsoft\WindowsApps\mspaint.exe"
+ → C:\Users\usename\AppData\Local\Microsoft\WindowsApps\mspaint.exe
 
 # エクスプローラで選択している全てのファイルパスを取得する
 ${explorer selection_path}
- → "C:\Users\usename\AppData\Local\Microsoft\WindowsApps\ms-teams.exe" "C:\Users\usename\AppData\Local\Microsoft\WindowsApps\mspaint.exe"
+ → C:\Users\usename\AppData\Local\Microsoft\WindowsApps\ms-teams.exe C:\Users\usename\AppData\Local\Microsoft\WindowsApps\mspaint.exe
 ```
 
 -----------

@@ -16,7 +16,7 @@ protected:
 public:
 	CString GetName() override;
 	CString GetDescription() override;
-	bool Evaluate(const std::vector<CString>& args, CString& result) override;
+	bool Evaluate(const std::vector<CString>& args, std::vector<CString>& results) override;
 	uint32_t AddRef() override;
 	uint32_t Release() override;
 

@@ -12,7 +12,7 @@ class DateMacro : public launcherapp::macros::core::MacroBase
 	~DateMacro() override;
 
 public:
-	bool Evaluate(const std::vector<CString>& args, CString& result) override;
+	bool Evaluate(const std::vector<CString>& args, std::vector<CString>& results) override;
 
 	static CTimeSpan MakeTimeSpan(const CString& str);
 	static int ComputeDayFromYear(int offset, CTime tmToday);

@@ -12,7 +12,7 @@ class ClipboardMacro : public launcherapp::macros::core::MacroBase
 	virtual ~ClipboardMacro();
 
 public:
-	bool Evaluate(const std::vector<CString>& args, CString& result) override;
+	bool Evaluate(const std::vector<CString>& args, std::vector<CString>& results) override;
 
 	DECLARE_LAUNCHERMACRO(ClipboardMacro)
 };

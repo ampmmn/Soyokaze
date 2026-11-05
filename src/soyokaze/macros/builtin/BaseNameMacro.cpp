@@ -20,8 +20,10 @@ BaseNameMacro::~BaseNameMacro()
 {
 }
 
-bool BaseNameMacro::Evaluate(const std::vector<CString>& args, CString& result)
+bool BaseNameMacro::Evaluate(const std::vector<CString>& args, std::vector<CString>& results)
 {
+	results.clear();
+
 	if (args.size() == 0) {
 		return false;
 	}
@@ -43,7 +45,7 @@ bool BaseNameMacro::Evaluate(const std::vector<CString>& args, CString& result)
 		path = _T("\"") + path + _T("\"");
 	}
 
-	result = path;
+	results.push_back(path);
 
 	spdlog::debug(_T("result={}"), (LPCTSTR)path);
 
