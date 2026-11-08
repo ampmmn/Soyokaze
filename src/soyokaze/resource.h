@@ -215,8 +215,10 @@
 #define IDC_STATIC_PATH3                1018
 #define IDC_STATIC_PARAM00              1019
 #define IDC_STATIC_PATH2                1019
+#define IDC_STATIC_PARAM2               1019
 #define IDC_EDIT_PATH                   1020
 #define IDC_STATIC_PATH1                1020
+#define IDC_STATIC_PARAM3               1020
 #define IDC_EDIT_PARAM                  1021
 #define IDC_EDIT_MESSAGE                1021
 #define IDC_STATIC_PATH4                1021
@@ -240,6 +242,8 @@
 #define IDC_STATIC_PATH5                1025
 #define IDC_BUTTON_BROWSEDIR3           1026
 #define IDC_EDIT_HOTKEY_COPY            1026
+#define IDC_EDIT_DIR2                   1026
+#define IDC_EDIT_EXTENSION              1026
 #define IDC_COMBO_SHOWTYPE              1027
 #define IDC_EDIT_HOTKEY_CONTEXTMENU     1027
 #define IDC_STATIC_STATUSMSG            1028
@@ -247,9 +251,11 @@
 #define IDC_STATIC_PARAM0               1029
 #define IDC_COMBO_AFTERCOMMAND          1029
 #define IDC_EDIT_HOTKEY_DELWORD         1029
+#define IDC_COMBO_RESULTTYPE            1029
 #define IDC_STATIC_NAME                 1030
 #define IDC_BUTTON_RESOLVESHORTCUT2     1030
 #define IDC_COMBO_AFTERTYPE             1030
+#define IDC_COMBO_PREVIEWTYPE           1030
 #define IDC_EDIT_HOTKEY2                1031
 #define IDC_LIST_COMMANDS               1032
 #define IDC_CHECK_USEREGEXP             1032
@@ -627,8 +633,11 @@
 #define IDD_APPSETTING_SHORTCUT1        1265
 #define IDD_APPSETTING_QRCODE           1265
 #define IDC_QRCODE_PREFIX               1266
+#define IDD_COMMAND_OUTPUTPREVIEW       1266
 #define IDC_QRCODE_ERROR_LEVEL          1267
 #define IDC_CHECK1                      1268
+#define IDC_CHECK_FORCE                 1268
+#define IDC_EDIT_TIMEOUT                1269
 #define IDC_EDIT_GROUP_PATH             1300
 #define IDC_EDIT_GROUP_PARAM            1301
 #define IDC_EDIT_GROUP_WORKDIR          1302
@@ -649,9 +658,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        269
+#define _APS_NEXT_RESOURCE_VALUE        270
 #define _APS_NEXT_COMMAND_VALUE         32780
-#define _APS_NEXT_CONTROL_VALUE         1269
+#define _APS_NEXT_CONTROL_VALUE         1270
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## Added
+
+- #343 【試作】実行結果表示コマンドを追加
+
 ## Changed
 
 - #342 プロジェクト設定で変数$(SolutionDir)を使用している箇所を$(ProjectDir)に置き換える

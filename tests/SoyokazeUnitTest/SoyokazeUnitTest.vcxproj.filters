@@ -112,6 +112,9 @@
     <Filter Include="soyokaze\commands\office_favorites">
       <UniqueIdentifier>{4f0c2a7e-9b1d-4e3a-8c55-2d7e6a1b9f40}</UniqueIdentifier>
     </Filter>
+    <Filter Include="soyokaze\commands\output_preview">
+      <UniqueIdentifier>{41de2d60-82e9-4ec1-92a4-6d111d65d3b7}</UniqueIdentifier>
+    </Filter>
     <Filter Include="soyokaze\commands\shell_destinations">
       <UniqueIdentifier>{4370a88f-3f65-4cb3-a465-96a44f8aef37}</UniqueIdentifier>
     </Filter>
@@ -212,6 +215,24 @@
     </ClCompile>
     <ClCompile Include="..\testcode\soyokaze\utility\ProcessPathTest.cpp">
       <Filter>soyokaze\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\utility\FileAssociationResolverTest.cpp">
+      <Filter>soyokaze\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\commands\output_preview\OutputPreviewCommandParamTest.cpp">
+      <Filter>soyokaze\commands\output_preview</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\commands\output_preview\OutputPreviewRuntimeTest.cpp">
+      <Filter>soyokaze\commands\output_preview</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\commands\output_preview\OutputPreviewCommandTest.cpp">
+      <Filter>soyokaze\commands\output_preview</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\commands\output_preview\OutputPreviewResultCommandTest.cpp">
+      <Filter>soyokaze\commands\output_preview</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\commands\output_preview\OutputPreviewTextDecoderTest.cpp">
+      <Filter>soyokaze\commands\output_preview</Filter>
     </ClCompile>
     <ClCompile Include="..\testcode\soyokaze\matcher\CommandTokenTest.cpp">
       <Filter>soyokaze\matcher</Filter>

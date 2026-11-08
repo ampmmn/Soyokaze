@@ -8,6 +8,7 @@
 
 - アプリケーション、ファイル、フォルダ、URLを開く: 通常コマンド
 - Web検索を行う: Web検索コマンド
+- プログラムの標準出力や出力ファイルを確認する: 実行結果確認コマンド
 - 定型文を入力する: 定型文グループコマンド
 - 複数のコマンドをまとめて実行する: グループコマンド
 - 入力内容を加工してから実行する: フィルター、正規表現、エイリアス
@@ -24,6 +25,7 @@ maxdepth: 1
 user-command/shellexecute.md
 user-command/snippet-group.md
 user-command/websearch.md
+user-command/output-preview.md
 user-command/group.md
 user-command/directoryindex.md
 user-command/regexp.md

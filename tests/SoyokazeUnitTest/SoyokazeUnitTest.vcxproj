@@ -131,6 +131,12 @@
     <ClCompile Include="..\testcode\soyokaze\utility\ManualResetTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\utility\PathTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\utility\ProcessPathTest.cpp" />
+    <ClCompile Include="..\testcode\soyokaze\utility\FileAssociationResolverTest.cpp" />
+    <ClCompile Include="..\testcode\soyokaze\commands\output_preview\OutputPreviewCommandParamTest.cpp" />
+    <ClCompile Include="..\testcode\soyokaze\commands\output_preview\OutputPreviewRuntimeTest.cpp" />
+    <ClCompile Include="..\testcode\soyokaze\commands\output_preview\OutputPreviewCommandTest.cpp" />
+    <ClCompile Include="..\testcode\soyokaze\commands\output_preview\OutputPreviewResultCommandTest.cpp" />
+    <ClCompile Include="..\testcode\soyokaze\commands\output_preview\OutputPreviewTextDecoderTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\utility\RefPtrTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\utility\SHA1Test.cpp" />
     <ClCompile Include="..\testcode\soyokaze\utility\StringUtilTest.cpp" />

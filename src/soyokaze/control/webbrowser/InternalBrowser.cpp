@@ -98,6 +98,14 @@ struct InternalBrowser::PImpl : public LauncherEventListenerIF
 			::PostMessage(mSelfWindow, WM_APP+1, 0, 0);
 		}
 	}
+	void ResetOpenRequest(const CString& url) {
+		std::lock_guard<std::mutex> lock(mMutex);
+		mRequest.clear();
+		mRequest.push_back(url);
+		if (IsWindow(mSelfWindow)) {
+			::PostMessage(mSelfWindow, WM_APP+1, 0, 0);
+		}
+	}
 	bool PopRequest(CString& url) {
 		std::lock_guard<std::mutex> lock(mMutex);
 		if (mRequest.empty()) {
@@ -195,6 +203,11 @@ BOOL InternalBrowser::Create(CWnd* pParentWnd, int style, const RECT& rect, UINT
 void InternalBrowser::Open(const CString& url)
 {
 	in->AddOpenRequest(url);
+}
+
+void InternalBrowser::ResetNavigation()
+{
+	in->ResetOpenRequest(_T("about:blank"));
 }
 
 void InternalBrowser::GoBack()

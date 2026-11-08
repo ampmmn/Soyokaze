@@ -14,6 +14,7 @@
 #endif
 #include "afxres.h"
 #include "verrsrc.h"
+#include "app/AppName.h"
 
 /////////////////////////////////////////////////////////////////////////////
 #undef APSTUDIO_READONLY_SYMBOLS
@@ -54,10 +55,10 @@ BEGIN
     "\r\n"
     "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)\r\n"
     "LANGUAGE 17, 1\r\n"
-    "#include ""res\\Soyokaze.rc2""  // Microsoft Visual C++ 鬯ｮ・｣雎郁ｲｻ・ｽ・ｼ陞滂ｽｲ繝ｻ・ｽ繝ｻ・ｽ郢晢ｽｻ繝ｻ・･鬯ｮ・ｯ隶灘･・ｽｽ・ｻ髦ｮ蜊搾ｽｧ鬩搾ｽｵ繝ｻ・ｲ髯晢ｽｶ隴擾ｽｴ繝ｻ繝ｻ・ｹ譎｢・ｽ・ｻ郢晢ｽｻ繝ｻ・ｨ鬯ｯ・ｯ繝ｻ・ｮ郢晢ｽｻ繝ｻ・ｮ鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｻ驛｢譎｢・ｽ・ｻ驛｢譎｢・ｽ・ｻ郢晢ｽｻ繝ｻ・ｹ郢晢ｽｻ繝ｻ・ｧ鬮ｯ貅ｷ萓帙・・ｨ繝ｻ・ｯ鬮ｯ讖ｸ・ｽ・ｺ鬯ｩ蟷｢・ｽ・｢髫ｴ雜｣・ｽ・｢郢晢ｽｻ繝ｻ・ｽ郢晢ｽｻ繝ｻ・ｪ鬯ｩ蟷｢・ｽ・｢郢晢ｽｻ繝ｻ・ｧ驛｢譎｢・ｽ・ｻ郢晢ｽｻ繝ｻ・ｽ鬯ｩ蟷｢・ｽ・｢髫ｴ雜｣・ｽ・｢郢晢ｽｻ繝ｻ・ｽ郢晢ｽｻ繝ｻ・ｼ鬯ｩ蟷｢・ｽ・｢郢晢ｽｻ繝ｻ・ｧ驛｢譎｢・ｽ・ｻ郢晢ｽｻ繝ｻ・ｹ\r\n"
-    "#include ""l.JPN\\afxres.rc""      // 鬯ｮ・ｫ繝ｻ・ｶ髴難ｽ｣陋滂ｽ｡繝ｻ・ｶ隲帷ｿｫ繝ｻ郢晢ｽｻ繝ｻ・ｺ鬮ｫ・ｰ髮具ｽｻ繝ｻ・ｽ繝ｻ・ｶ鬩搾ｽｵ繝ｻ・ｺ髫ｲ・ｷ陋ｹ繝ｻ・ｽ・ｽ繝ｻ・ｹ髫ｴ雜｣・ｽ・｢郢晢ｽｻ繝ｻ・ｽ郢晢ｽｻ繝ｻ・ｳ鬯ｩ蟷｢・ｽ・｢髫ｴ蠑ｱ繝ｻ繝ｻ・ｺ繝ｻ・｢鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｻ鬯ｩ蟷｢・ｽ・｢髫ｴ蜿厄ｽｨ雋ｻ・ｽ・ｺ郢ｧ謇假ｽｽ・ｾ髮懶ｽ｣繝ｻ・ｽ繝ｻ・ｦ鬯ｩ蟷｢・ｽ・｢髫ｴ謫ｾ・ｽ・ｴ驛｢譎｢・ｽ・ｻ\n"
+    "#include ""res\\Soyokaze.rc2""  // Microsoft Visual C++ 鬮｣豈費ｽｼ螟ｲ・ｽ・ｽ繝ｻ・･鬮ｯ讓奇ｽｻ阮卍ｧ驍ｵ・ｲ陝ｶ譏ｴ・・ｹ晢ｽｻ繝ｻ・ｨ鬯ｯ・ｮ繝ｻ・ｮ驛｢譎｢・ｽ・ｻ郢晢ｽｻ郢晢ｽｻ繝ｻ・ｹ繝ｻ・ｧ髯溷供・ｨ・ｯ髯橸ｽｺ鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｪ鬩幢ｽ｢繝ｻ・ｧ郢晢ｽｻ繝ｻ・ｽ鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｼ鬩幢ｽ｢繝ｻ・ｧ郢晢ｽｻ繝ｻ・ｹ\r\n"
+    "#include ""l.JPN\\afxres.rc""      // 鬮ｫ・ｶ霓｣蛟｡・ｶ諛翫・繝ｻ・ｺ髫ｰ雋ｻ・ｽ・ｶ驍ｵ・ｺ隲ｷ蛹・ｽｽ・ｹ隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｳ鬩幢ｽ｢隴弱・・ｺ・｢驛｢譎｢・ｽ・ｻ鬩幢ｽ｢隴取ｨ費ｽｺ繧托ｽｾ雜｣・ｽ・ｦ鬩幢ｽ｢隴擾ｽｴ郢晢ｽｻ\n"
     "#if !defined(_AFXDLL)\r\n"
-    "#include  ""l.JPN\\afxribbon.rc""   // MFC 鬯ｩ蟷｢・ｽ・｢髫ｴ雜｣・ｽ・｢郢晢ｽｻ繝ｻ・ｽ郢晢ｽｻ繝ｻ・ｪ鬯ｩ蟷｢・ｽ・｢髫ｴ蠑ｱ繝ｻ鬲・ｽｵ郢晢ｽｻ髮懶ｽ｣繝ｻ・ｽ繝ｻ・ｦ鬯ｩ謳ｾ・ｽ・ｵ郢晢ｽｻ繝ｻ・ｺ鬯ｩ諤憺●繝ｻ・ｽ繝ｻ・ｫ驛｢譎｢・ｽ・ｻ鬮｢・ｧ繝ｻ・ｲ郢晢ｽｻ繝ｻ・ｸ郢晢ｽｻ繝ｻ・ｺ驛｢譎｢・ｽ・ｻ郢晢ｽｻ繝ｻ・ｳ鬯ｩ蟷｢・ｽ・｢郢晢ｽｻ繝ｻ・ｧ驛｢譎｢・ｽ・ｻ郢晢ｽｻ繝ｻ・ｳ鬯ｩ蟷｢・ｽ・｢髫ｴ雜｣・ｽ・｢郢晢ｽｻ繝ｻ・ｽ郢晢ｽｻ繝ｻ・ｳ鬯ｩ蟷｢・ｽ・｢髫ｴ荳ｻ繝ｻ隶捺ｺ倥・陷ｿ蜴・ｽｽ・ｺ繝ｻ・ｽ郢晢ｽｻ繝ｻ・ｹ髫ｴ雜｣・ｽ・｢郢晢ｽｻ繝ｻ・ｽ郢晢ｽｻ繝ｻ・ｼ鬯ｩ蟷｢・ｽ・｢髫ｴ雜｣・ｽ・｢郢晢ｽｻ繝ｻ・ｽ郢晢ｽｻ繝ｻ・ｫ 鬯ｩ蟷｢・ｽ・｢髫ｴ蟇ゅ・郢晢ｽｻ鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｻ 鬯ｩ蟷｢・ｽ・｢髫ｴ雜｣・ｽ・｢郢晢ｽｻ繝ｻ・ｽ郢晢ｽｻ繝ｻ・ｪ鬯ｩ蟷｢・ｽ・｢郢晢ｽｻ繝ｻ・ｧ驛｢譎｢・ｽ・ｻ郢晢ｽｻ繝ｻ・ｽ鬯ｩ蟷｢・ｽ・｢髫ｴ雜｣・ｽ・｢郢晢ｽｻ繝ｻ・ｽ郢晢ｽｻ繝ｻ・ｼ鬯ｩ蟷｢・ｽ・｢郢晢ｽｻ繝ｻ・ｧ驛｢譎｢・ｽ・ｻ郢晢ｽｻ繝ｻ・ｹ\r\n"
+    "#include  ""l.JPN\\afxribbon.rc""   // MFC 鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｪ鬩幢ｽ｢隴弱・魃ｵ繝ｻ雜｣・ｽ・ｦ鬩搾ｽｵ繝ｻ・ｺ鬩怜遜・ｽ・ｫ郢晢ｽｻ髢ｧ・ｲ繝ｻ・ｸ繝ｻ・ｺ郢晢ｽｻ繝ｻ・ｳ鬩幢ｽ｢繝ｻ・ｧ郢晢ｽｻ繝ｻ・ｳ鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｳ鬩幢ｽ｢隴主・讓溘・蜿厄ｽｺ・ｽ繝ｻ・ｹ隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｼ鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｫ 鬩幢ｽ｢隴寂・繝ｻ驛｢譎｢・ｽ・ｻ 鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｪ鬩幢ｽ｢繝ｻ・ｧ郢晢ｽｻ繝ｻ・ｽ鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｼ鬩幢ｽ｢繝ｻ・ｧ郢晢ｽｻ繝ｻ・ｹ\r\n"
     "#endif\r\n"
     "#endif\r\n"
     "\0"
@@ -76,7 +77,6 @@ END
 IDR_MAINFRAME           ICON                    "res\\icon.ico"
 
 IDI_QRCODE              ICON                    "res\\qrcode.ico"
-
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -1781,6 +1781,42 @@ BEGIN
     COMBOBOX        IDC_QRCODE_ERROR_LEVEL,106,48,46,60,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
 END
 
+IDD_COMMAND_OUTPUTPREVIEW DIALOGEX 0, 0, 347, 307
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+CAPTION "実行結果表示コマンドの設定"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "コマンドの名前(&N):",IDC_STATIC,7,30,65,8
+    EDITTEXT        IDC_EDIT_NAME,7,43,77,14,ES_AUTOHSCROLL
+    LTEXT           "説明(&D):",IDC_STATIC,95,30,65,8
+    EDITTEXT        IDC_EDIT_DESCRIPTION,95,43,220,14,ES_AUTOHSCROLL
+    LTEXT           "実行するファイルのパス(&F):",IDC_STATIC,7,64,87,8
+    EDITTEXT        IDC_EDIT_FILEPATH,7,76,305,14,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "&...",IDC_BUTTON_BROWSE,312,76,28,14
+    LTEXT           "パラメータ(&P):",IDC_STATIC_PARAM,10,97,65,8
+    EDITTEXT        IDC_EDIT_PARAM,7,108,307,14,ES_AUTOHSCROLL
+    LTEXT           "引数を受け取る場合は $* や $1 を使用します。\nファイル出力を結果表示に使う場合は $output を指定します。",IDC_STATIC_PARAMHELP,7,127,325,16
+    LTEXT           "ウインドウの表示方法(&S):",IDC_STATIC,7,150,94,8
+    COMBOBOX        IDC_COMBO_SHOWTYPE,7,161,107,40,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "作業フォルダ(&W):",IDC_STATIC,119,150,65,8
+    EDITTEXT        IDC_EDIT_DIR,119,160,193,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "お",IDC_BUTTON_BROWSEDIR,312,158,21,16
+    LTEXT           "結果表示に用いる出力(&R):",IDC_STATIC,7,185,94,8
+    COMBOBOX        IDC_COMBO_RESULTTYPE,7,196,107,40,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "出力ファイルの拡張子(&E):",IDC_STATIC,119,185,94,8
+    EDITTEXT        IDC_EDIT_EXTENSION,119,195,58,14,ES_AUTOHSCROLL
+    LTEXT           "結果表示方法(&V):",IDC_STATIC,7,216,94,8
+    COMBOBOX        IDC_COMBO_PREVIEWTYPE,7,226,107,40,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "タイムアウト(&T):",IDC_STATIC_PARAM2,119,216,65,8
+    EDITTEXT        IDC_EDIT_TIMEOUT,119,225,58,14,ES_AUTOHSCROLL
+    LTEXT           "ミリ秒",IDC_STATIC_PARAM3,181,228,40,8
+    CONTROL         "終了コードが0でなくても結果表示を試みる(&O)",IDC_CHECK_FORCE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,250,160,10
+    DEFPUSHBUTTON   "OK",IDOK,237,286,50,14
+    PUSHBUTTON      "キャンセル",IDCANCEL,290,286,50,14
+    CONTROL         "",IDC_STATIC_ICON,"Static",SS_BLACKFRAME | SS_NOTIFY,7,7,21,20
+    LTEXT           "(メッセージ欄)",IDC_STATIC_STATUSMSG,37,7,303,8
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -1804,12 +1840,12 @@ BEGIN
     BEGIN
         BLOCK "041104b0"
         BEGIN
-            VALUE "FileDescription", "Soyokaze"
+            VALUE "FileDescription", APPNAME_
             VALUE "FileVersion", "0.64.0.1"
-            VALUE "InternalName", "soyokaze.exe"
-            VALUE "LegalCopyright", "ymgw.  All rights reserved."
-            VALUE "OriginalFilename", "soyokaze.exe"
-            VALUE "ProductName", "Soyokaze"
+            VALUE "InternalName", APP_EXENAME_
+            VALUE "LegalCopyright", COPYRIGHT_STR
+            VALUE "OriginalFilename", APP_EXENAME_
+            VALUE "ProductName", APPNAME_
             VALUE "ProductVersion", "0.64.0.1"
         END
     END
@@ -2471,6 +2507,14 @@ BEGIN
         RIGHTMARGIN, 296
         TOPMARGIN, 7
         BOTTOMMARGIN, 133
+    END
+
+    IDD_COMMAND_OUTPUTPREVIEW, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 340
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 300
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -3451,6 +3495,40 @@ END
 IDD_APPSETTING_QRCODE AFX_DIALOG_LAYOUT
 BEGIN
     0
+END
+
+IDD_COMMAND_OUTPUTPREVIEW AFX_DIALOG_LAYOUT
+BEGIN
+    0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    100, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    100, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    100, 0, 0, 0,
+    100, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 0
 END
 
 
@@ -4987,6 +5065,30 @@ BEGIN
     0
 END
 
+IDD_COMMAND_OUTPUTPREVIEW DLGINIT
+BEGIN
+    IDC_COMBO_SHOWTYPE, 0x403, 9, 0
+0xca92, 0xed8f, 0x5c95, 0xa68e, "\000" 
+    IDC_COMBO_SHOWTYPE, 0x403, 7, 0
+0xf194, 0x5c95, 0xa68e, "\000" 
+    IDC_COMBO_SHOWTYPE, 0x403, 9, 0
+0xc58d, 0xac8f, 0x5c95, 0xa68e, "\000" 
+    IDC_COMBO_SHOWTYPE, 0x403, 9, 0
+0xc58d, 0xe591, 0x5c95, 0xa68e, "\000" 
+    IDC_COMBO_RESULTTYPE, 0x403, 9, 0
+0x5795, 0x808f, 0x6f8f, 0xcd97, "\000" 
+    IDC_COMBO_RESULTTYPE, 0x403, 19, 0
+0x6f24, 0x7475, 0x7570, 0x2074, 0xcc82, 0x7483, 0x4083, 0x4383, 0x8b83, 
+"\000" 
+    IDC_COMBO_PREVIEWTYPE, 0x403, 19, 0
+0x6583, 0x4c83, 0x5883, 0x6783, 0xc682, 0xb582, 0xc482, 0x5c95, 0xa68e, 
+"\000" 
+    IDC_COMBO_PREVIEWTYPE, 0x403, 24, 0
+0x6557, 0x8362, 0x8352, 0x8393, 0x8365, 0x8393, 0x8263, 0x82c6, 0x82b5, 
+0x95c4, 0x8e5c, 0x00a6, 
+    0
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -5145,12 +5247,14 @@ END
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)
 LANGUAGE 17, 1
-#include "res\Soyokaze.rc2"  // Microsoft Visual C++ 鬯ｮ・｣雎郁ｲｻ・ｽ・ｼ陞滂ｽｲ繝ｻ・ｽ繝ｻ・ｽ郢晢ｽｻ繝ｻ・･鬯ｮ・ｯ隶灘･・ｽｽ・ｻ髦ｮ蜊搾ｽｧ鬩搾ｽｵ繝ｻ・ｲ髯晢ｽｶ隴擾ｽｴ繝ｻ繝ｻ・ｹ譎｢・ｽ・ｻ郢晢ｽｻ繝ｻ・ｨ鬯ｯ・ｯ繝ｻ・ｮ郢晢ｽｻ繝ｻ・ｮ鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｻ驛｢譎｢・ｽ・ｻ驛｢譎｢・ｽ・ｻ郢晢ｽｻ繝ｻ・ｹ郢晢ｽｻ繝ｻ・ｧ鬮ｯ貅ｷ萓帙・・ｨ繝ｻ・ｯ鬮ｯ讖ｸ・ｽ・ｺ鬯ｩ蟷｢・ｽ・｢髫ｴ雜｣・ｽ・｢郢晢ｽｻ繝ｻ・ｽ郢晢ｽｻ繝ｻ・ｪ鬯ｩ蟷｢・ｽ・｢郢晢ｽｻ繝ｻ・ｧ驛｢譎｢・ｽ・ｻ郢晢ｽｻ繝ｻ・ｽ鬯ｩ蟷｢・ｽ・｢髫ｴ雜｣・ｽ・｢郢晢ｽｻ繝ｻ・ｽ郢晢ｽｻ繝ｻ・ｼ鬯ｩ蟷｢・ｽ・｢郢晢ｽｻ繝ｻ・ｧ驛｢譎｢・ｽ・ｻ郢晢ｽｻ繝ｻ・ｹ
-#include "l.JPN\afxres.rc"      // 鬯ｮ・ｫ繝ｻ・ｶ髴難ｽ｣陋滂ｽ｡繝ｻ・ｶ隲帷ｿｫ繝ｻ郢晢ｽｻ繝ｻ・ｺ鬮ｫ・ｰ髮具ｽｻ繝ｻ・ｽ繝ｻ・ｶ鬩搾ｽｵ繝ｻ・ｺ髫ｲ・ｷ陋ｹ繝ｻ・ｽ・ｽ繝ｻ・ｹ髫ｴ雜｣・ｽ・｢郢晢ｽｻ繝ｻ・ｽ郢晢ｽｻ繝ｻ・ｳ鬯ｩ蟷｢・ｽ・｢髫ｴ蠑ｱ繝ｻ繝ｻ・ｺ繝ｻ・｢鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｻ鬯ｩ蟷｢・ｽ・｢髫ｴ蜿厄ｽｨ雋ｻ・ｽ・ｺ郢ｧ謇假ｽｽ・ｾ髮懶ｽ｣繝ｻ・ｽ繝ｻ・ｦ鬯ｩ蟷｢・ｽ・｢髫ｴ謫ｾ・ｽ・ｴ驛｢譎｢・ｽ・ｻ
+#include "res\Soyokaze.rc2"  // Microsoft Visual C++ 鬮｣豈費ｽｼ螟ｲ・ｽ・ｽ繝ｻ・･鬮ｯ讓奇ｽｻ阮卍ｧ驍ｵ・ｲ陝ｶ譏ｴ・・ｹ晢ｽｻ繝ｻ・ｨ鬯ｯ・ｮ繝ｻ・ｮ驛｢譎｢・ｽ・ｻ郢晢ｽｻ郢晢ｽｻ繝ｻ・ｹ繝ｻ・ｧ髯溷供・ｨ・ｯ髯橸ｽｺ鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｪ鬩幢ｽ｢繝ｻ・ｧ郢晢ｽｻ繝ｻ・ｽ鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｼ鬩幢ｽ｢繝ｻ・ｧ郢晢ｽｻ繝ｻ・ｹ
+#include "l.JPN\afxres.rc"      // 鬮ｫ・ｶ霓｣蛟｡・ｶ諛翫・繝ｻ・ｺ髫ｰ雋ｻ・ｽ・ｶ驍ｵ・ｺ隲ｷ蛹・ｽｽ・ｹ隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｳ鬩幢ｽ｢隴弱・・ｺ・｢驛｢譎｢・ｽ・ｻ鬩幢ｽ｢隴取ｨ費ｽｺ繧托ｽｾ雜｣・ｽ・ｦ鬩幢ｽ｢隴擾ｽｴ郢晢ｽｻ
 #if !defined(_AFXDLL)
-#include  "l.JPN\afxribbon.rc"   // MFC 鬯ｩ蟷｢・ｽ・｢髫ｴ雜｣・ｽ・｢郢晢ｽｻ繝ｻ・ｽ郢晢ｽｻ繝ｻ・ｪ鬯ｩ蟷｢・ｽ・｢髫ｴ蠑ｱ繝ｻ鬲・ｽｵ郢晢ｽｻ髮懶ｽ｣繝ｻ・ｽ繝ｻ・ｦ鬯ｩ謳ｾ・ｽ・ｵ郢晢ｽｻ繝ｻ・ｺ鬯ｩ諤憺●繝ｻ・ｽ繝ｻ・ｫ驛｢譎｢・ｽ・ｻ鬮｢・ｧ繝ｻ・ｲ郢晢ｽｻ繝ｻ・ｸ郢晢ｽｻ繝ｻ・ｺ驛｢譎｢・ｽ・ｻ郢晢ｽｻ繝ｻ・ｳ鬯ｩ蟷｢・ｽ・｢郢晢ｽｻ繝ｻ・ｧ驛｢譎｢・ｽ・ｻ郢晢ｽｻ繝ｻ・ｳ鬯ｩ蟷｢・ｽ・｢髫ｴ雜｣・ｽ・｢郢晢ｽｻ繝ｻ・ｽ郢晢ｽｻ繝ｻ・ｳ鬯ｩ蟷｢・ｽ・｢髫ｴ荳ｻ繝ｻ隶捺ｺ倥・陷ｿ蜴・ｽｽ・ｺ繝ｻ・ｽ郢晢ｽｻ繝ｻ・ｹ髫ｴ雜｣・ｽ・｢郢晢ｽｻ繝ｻ・ｽ郢晢ｽｻ繝ｻ・ｼ鬯ｩ蟷｢・ｽ・｢髫ｴ雜｣・ｽ・｢郢晢ｽｻ繝ｻ・ｽ郢晢ｽｻ繝ｻ・ｫ 鬯ｩ蟷｢・ｽ・｢髫ｴ蟇ゅ・郢晢ｽｻ鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｻ 鬯ｩ蟷｢・ｽ・｢髫ｴ雜｣・ｽ・｢郢晢ｽｻ繝ｻ・ｽ郢晢ｽｻ繝ｻ・ｪ鬯ｩ蟷｢・ｽ・｢郢晢ｽｻ繝ｻ・ｧ驛｢譎｢・ｽ・ｻ郢晢ｽｻ繝ｻ・ｽ鬯ｩ蟷｢・ｽ・｢髫ｴ雜｣・ｽ・｢郢晢ｽｻ繝ｻ・ｽ郢晢ｽｻ繝ｻ・ｼ鬯ｩ蟷｢・ｽ・｢郢晢ｽｻ繝ｻ・ｧ驛｢譎｢・ｽ・ｻ郢晢ｽｻ繝ｻ・ｹ
+#include  "l.JPN\afxribbon.rc"   // MFC 鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｪ鬩幢ｽ｢隴弱・魃ｵ繝ｻ雜｣・ｽ・ｦ鬩搾ｽｵ繝ｻ・ｺ鬩怜遜・ｽ・ｫ郢晢ｽｻ髢ｧ・ｲ繝ｻ・ｸ繝ｻ・ｺ郢晢ｽｻ繝ｻ・ｳ鬩幢ｽ｢繝ｻ・ｧ郢晢ｽｻ繝ｻ・ｳ鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｳ鬩幢ｽ｢隴主・讓溘・蜿厄ｽｺ・ｽ繝ｻ・ｹ隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｼ鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｫ 鬩幢ｽ｢隴寂・繝ｻ驛｢譎｢・ｽ・ｻ 鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｪ鬩幢ｽ｢繝ｻ・ｧ郢晢ｽｻ繝ｻ・ｽ鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｼ鬩幢ｽ｢繝ｻ・ｧ郢晢ｽｻ繝ｻ・ｹ
 #endif
 #endif
+
+#include "override.rc"
 
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED

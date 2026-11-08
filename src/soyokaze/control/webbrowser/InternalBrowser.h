@@ -39,6 +39,10 @@ public:
 	 * @param url URL to open.
 	 */
 	void Open(const CString& url);
+	/**
+	  保留中の遷移を取り消し、空ページへ戻す
+	*/
+	void ResetNavigation();
 
 	/**
 	 * @brief Go back to the previous page.

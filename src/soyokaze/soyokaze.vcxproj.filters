@@ -46,6 +46,9 @@
     <Filter Include="commands\common\preview">
       <UniqueIdentifier>{76410cb4-1524-40d6-b21a-f611c6c707f5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="commands\output_preview">
+      <UniqueIdentifier>{a4f67e2c-9d1b-4bb6-87c6-2e63d709f831}</UniqueIdentifier>
+    </Filter>
     <Filter Include="commands\plugin">
       <UniqueIdentifier>{b1d346b8-a16d-4b26-bf56-6f5588e6e4db}</UniqueIdentifier>
     </Filter>
@@ -2232,6 +2235,36 @@
     <ClInclude Include="commands\qrcode\QR-Code-generator-1.8.0\cpp\qrcodegen.hpp">
       <Filter>commands\qrcode\QR-Code-Generator-1.8.0</Filter>
     </ClInclude>
+    <ClInclude Include="commands\common\preview\WebviewPreviewWindow.h">
+      <Filter>commands\common\preview</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\output_preview\OutputPreviewCommand.h">
+      <Filter>commands\output_preview</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\output_preview\OutputPreviewCommandParam.h">
+      <Filter>commands\output_preview</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\output_preview\OutputPreviewCommandProvider.h">
+      <Filter>commands\output_preview</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\output_preview\OutputPreviewEditor.h">
+      <Filter>commands\output_preview</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\output_preview\OutputPreviewResultCommand.h">
+      <Filter>commands\output_preview</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\output_preview\OutputPreviewRuntime.h">
+      <Filter>commands\output_preview</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\output_preview\OutputPreviewSettingDialog.h">
+      <Filter>commands\output_preview</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\output_preview\OutputPreviewTextDecoder.h">
+      <Filter>commands\output_preview</Filter>
+    </ClInclude>
+    <ClInclude Include="utility\FileAssociationResolver.h">
+      <Filter>utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -3931,6 +3964,36 @@
     </ClCompile>
     <ClCompile Include="commands\qrcode\QR-Code-generator-1.8.0\cpp\qrcodegen.cpp">
       <Filter>commands\qrcode\QR-Code-Generator-1.8.0</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\common\preview\WebviewPreviewWindow.cpp">
+      <Filter>commands\common\preview</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\output_preview\OutputPreviewCommand.cpp">
+      <Filter>commands\output_preview</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\output_preview\OutputPreviewCommandParam.cpp">
+      <Filter>commands\output_preview</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\output_preview\OutputPreviewCommandProvider.cpp">
+      <Filter>commands\output_preview</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\output_preview\OutputPreviewEditor.cpp">
+      <Filter>commands\output_preview</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\output_preview\OutputPreviewResultCommand.cpp">
+      <Filter>commands\output_preview</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\output_preview\OutputPreviewRuntime.cpp">
+      <Filter>commands\output_preview</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\output_preview\OutputPreviewSettingDialog.cpp">
+      <Filter>commands\output_preview</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\output_preview\OutputPreviewTextDecoder.cpp">
+      <Filter>commands\output_preview</Filter>
+    </ClCompile>
+    <ClCompile Include="utility\FileAssociationResolver.cpp">
+      <Filter>utility</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

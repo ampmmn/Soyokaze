@@ -476,6 +476,7 @@
     <ClInclude Include="commands\clipboardhistory\ClipboardHistoryQueryCancellationToken.h" />
     <ClInclude Include="commands\common\preview\PreviewWindow.h" />
     <ClInclude Include="commands\common\preview\PreviewHighlighter.h" />
+    <ClInclude Include="commands\common\preview\WebviewPreviewWindow.h" />
     <ClInclude Include="commands\common\AutoWrap.h" />
     <ClInclude Include="commands\common\CommandParameterFunctions.h" />
     <ClInclude Include="commands\common\CommandSelectDialog.h" />
@@ -778,6 +779,14 @@
     <ClInclude Include="commands\office_favorites\OfficeFavorites.h" />
     <ClInclude Include="commands\office_favorites\OfficeFavoritesCommand.h" />
     <ClInclude Include="commands\office_favorites\OfficeFavoritesProvider.h" />
+    <ClInclude Include="commands\output_preview\OutputPreviewCommand.h" />
+    <ClInclude Include="commands\output_preview\OutputPreviewCommandParam.h" />
+    <ClInclude Include="commands\output_preview\OutputPreviewCommandProvider.h" />
+    <ClInclude Include="commands\output_preview\OutputPreviewEditor.h" />
+    <ClInclude Include="commands\output_preview\OutputPreviewResultCommand.h" />
+    <ClInclude Include="commands\output_preview\OutputPreviewRuntime.h" />
+    <ClInclude Include="commands\output_preview\OutputPreviewSettingDialog.h" />
+    <ClInclude Include="commands\output_preview\OutputPreviewTextDecoder.h" />
     <ClInclude Include="commands\decodestring\DecodeStringCommandProvider.h" />
     <ClInclude Include="commands\decodestring\DecodeUriCommand.h" />
     <ClInclude Include="commands\decodestring\EscapedCharCommand.h" />
@@ -995,6 +1004,7 @@
     <ClInclude Include="utility\LastErrorString.h" />
     <ClInclude Include="utility\LocalDirectoryWatcher.h" />
     <ClInclude Include="utility\LocalPathResolver.h" />
+    <ClInclude Include="utility\FileAssociationResolver.h" />
     <ClInclude Include="utility\ManualEvent.h" />
     <ClInclude Include="utility\MessageExchangeWindow.h" />
     <ClInclude Include="utility\FilerParameter.h" />
@@ -1101,6 +1111,7 @@
     <ClCompile Include="commands\clipboardhistory\ClipboardHistoryQueryCancellationToken.cpp" />
     <ClCompile Include="commands\common\preview\PreviewWindow.cpp" />
     <ClCompile Include="commands\common\preview\PreviewHighlighter.cpp" />
+    <ClCompile Include="commands\common\preview\WebviewPreviewWindow.cpp" />
     <ClCompile Include="commands\common\AutoWrap.cpp" />
     <ClCompile Include="commands\common\CommandParameterFunctions.cpp" />
     <ClCompile Include="commands\common\CommandSelectDialog.cpp" />
@@ -1389,6 +1400,14 @@
     <ClCompile Include="commands\office_favorites\OfficeFavorites.cpp" />
     <ClCompile Include="commands\office_favorites\OfficeFavoritesCommand.cpp" />
     <ClCompile Include="commands\office_favorites\OfficeFavoritesProvider.cpp" />
+    <ClCompile Include="commands\output_preview\OutputPreviewCommand.cpp" />
+    <ClCompile Include="commands\output_preview\OutputPreviewCommandParam.cpp" />
+    <ClCompile Include="commands\output_preview\OutputPreviewCommandProvider.cpp" />
+    <ClCompile Include="commands\output_preview\OutputPreviewEditor.cpp" />
+    <ClCompile Include="commands\output_preview\OutputPreviewResultCommand.cpp" />
+    <ClCompile Include="commands\output_preview\OutputPreviewRuntime.cpp" />
+    <ClCompile Include="commands\output_preview\OutputPreviewSettingDialog.cpp" />
+    <ClCompile Include="commands\output_preview\OutputPreviewTextDecoder.cpp" />
     <ClCompile Include="commands\decodestring\DecodeStringCommandProvider.cpp" />
     <ClCompile Include="commands\decodestring\DecodeUriCommand.cpp" />
     <ClCompile Include="commands\decodestring\EscapedCharCommand.cpp" />
@@ -1601,6 +1620,7 @@
     <ClCompile Include="utility\ImageConverter.cpp" />
     <ClCompile Include="utility\LocalDirectoryWatcher.cpp" />
     <ClCompile Include="utility\LocalPathResolver.cpp" />
+    <ClCompile Include="utility\FileAssociationResolver.cpp" />
     <ClCompile Include="utility\ManualEvent.cpp" />
     <ClCompile Include="utility\MessageExchangeWindow.cpp" />
     <ClCompile Include="utility\FilerParameter.cpp" />
