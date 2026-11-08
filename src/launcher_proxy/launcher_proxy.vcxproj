@@ -1970,6 +1970,11 @@
       <AdditionalDependencies>runtimeobject.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <PreprocessorDefinitions>SPDLOG_USE_STD_FORMAT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\soyokaze\processproxy\share\AfxWFunctions.h" />
     <ClInclude Include="AutoWrap.h" />
