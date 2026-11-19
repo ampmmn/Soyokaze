@@ -1,12 +1,12 @@
 #include "pch.h"
 #include "OutlookFolderProvider.h"
 #include "commands/outlook/OutlookFolderCommand.h"
+#include "commands/outlook/OutlookFolderQueryCache.h"
 #include "commands/outlook/OutlookProxy.h"
 #include "commands/core/CommandRepository.h"
 #include "setting/AppPreferenceListenerIF.h"
 #include "setting/AppPreference.h"
 #include "resource.h"
-#include <list>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -40,22 +40,23 @@ struct OutlookFolderProvider::PImpl :
 
 	void Load() {
 		auto pref = AppPreference::Get();
-		mIsEnable = pref->IsEnableOutlookFolder();
-		mPrefix = pref->GetOutlookFolderSwitchPrefix();
-		if (mIsEnable) {
+		bool isEnable = pref->IsEnableOutlookFolder();
+		CString prefix = pref->GetOutlookFolderSwitchPrefix();
+		if (isEnable) {
 			auto proxy = OutlookProxy::GetInstance();
 			proxy->Initialize();
+			mQueryCache.Load(isEnable, prefix, [proxy](std::vector<QueryResult>& results) {
+				return proxy->EnumFolders(results);
+			});
+		}
+		else {
+			mQueryCache.Load(isEnable, prefix, [](std::vector<QueryResult>&) {
+				return false;
+			});
 		}
 	}
 
-
-	// キャッシュ
-	std::vector<QueryResult> mQueryCache;
-	// キャッシュの有無
-	bool mHasCache{false};
-	//
-	bool mIsEnable{false};
-	CString mPrefix;
+	OutlookFolderQueryCache mQueryCache;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -91,13 +92,19 @@ void OutlookFolderProvider::QueryAdhocCommands(
  	CommandQueryItemList& commands
 )
 {
+	auto snapshot = in->mQueryCache.GetSnapshot();
+
 	// 機能を利用しない場合は抜ける
-	if (in->mIsEnable == false) {
+	if (snapshot.mIsEnable == false) {
 		return;
 	}
 	// プレフィックスが一致しない場合は抜ける
-	const auto& prefix = in->mPrefix;
+	const auto& prefix = snapshot.mPrefix;
 	if (prefix.IsEmpty() == FALSE && prefix.CompareNoCase(pattern->GetFirstWord()) != 0) {
+		return;
+	}
+	// キャッシュがまだない場合はバックグラウンドでの取得完了を待つ
+	if (snapshot.mHasCache == false) {
 		return;
 	}
 
@@ -106,26 +113,14 @@ void OutlookFolderProvider::QueryAdhocCommands(
 
 	auto proxy = OutlookProxy::GetInstance();
 
-	if (in->mHasCache == false) {
-		// キャッシュがなければ問い合わせる
-		std::vector<QueryResult> queryResults;
-		if (proxy->EnumFolders(queryResults) == false) {
-			return ;
-		}
-		in->mQueryCache.swap(queryResults);
-		in->mHasCache = true;
-	}
-	else {
-		// アプリが起動してなかったらキャッシュをクリアする
-		if (proxy->IsAppRunning() == false) {
-			in->mQueryCache.clear();
-			in->mHasCache = false;
-			return ;
-		}
+	// アプリが起動していなかったらキャッシュをクリアする
+	if (proxy->IsAppRunning() == false) {
+		in->mQueryCache.Clear();
+		return ;
 	}
 
 	int hitCount = 0;
-	for (auto& result : in->mQueryCache) {
+	for (const auto& result : *snapshot.mQueryCache) {
 
 		int level = pattern->Match(result.mFullName, ignoreMask);
 		if (level == Pattern::Mismatch) {

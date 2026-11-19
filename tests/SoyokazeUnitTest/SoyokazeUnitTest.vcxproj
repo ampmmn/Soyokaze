@@ -87,6 +87,7 @@
     <ClCompile Include="..\testcode\soyokaze\commands\shell_destinations\AutomaticDestinationsFileTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\shell_destinations\ShellDestinationCommandTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\shell_destinations\ShellDestinationCommandProviderTest.cpp" />
+    <ClCompile Include="..\testcode\soyokaze\commands\outlook\OutlookFolderProviderTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\everything\EverythingAdhocCommandTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\group\GroupCommandParamTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\plugin\PluginSettingsTest.cpp" />
