@@ -40,6 +40,24 @@ TEST(FilerParameter, ExpandBothTargetFormats)
 	EXPECT_STREQ(_T("C:\\work\\folder C:/work/folder"), (LPCTSTR)parameter);
 }
 
+TEST(FilerParameter, QuoteTargetsContainingWhitespace)
+{
+	CString parameter(_T("--path=$target --slash-path=${target:s}"));
+
+	ExpandFilerParameter(parameter, _T("C:\\work files\\folder"));
+
+	EXPECT_STREQ(_T("--path=\"C:\\work files\\folder\" --slash-path=\"C:/work files/folder\""), (LPCTSTR)parameter);
+}
+
+TEST(FilerParameter, DoNotQuoteTargetAlreadySurroundedByQuotes)
+{
+	CString parameter(_T("--path=\"$target\""));
+
+	ExpandFilerParameter(parameter, _T("C:\\work files\\folder"));
+
+	EXPECT_STREQ(_T("--path=\"C:\\work files\\folder\""), (LPCTSTR)parameter);
+}
+
 TEST(FilerParameter, PreservePlaceholderTextInsideTargetPath)
 {
 	CString parameter(_T("${target:s}"));
