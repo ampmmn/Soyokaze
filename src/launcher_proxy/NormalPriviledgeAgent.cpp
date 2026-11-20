@@ -230,9 +230,9 @@ int NormalPriviledgeAgent::Run(HINSTANCE hInst, LPCWSTR pipeName)
 			in->mProxyWindow.SetBusy(isBusy);
 		}
 
-		char buffer[512];
+		std::vector<char> buffer(65536);
 		DWORD bytesRead = 0;
-		if (in->ReadPipeChunk(parentHwnd, buffer, sizeof(buffer), bytesRead) == false) {
+		if (in->ReadPipeChunk(parentHwnd, buffer.data(), (DWORD)buffer.size(), bytesRead) == false) {
 			if (IsWindow(parentHwnd.GetHwnd()) != FALSE) {
 				spdlog::error("Stopping agent after named pipe read failure.");
 			}
@@ -242,7 +242,7 @@ int NormalPriviledgeAgent::Run(HINSTANCE hInst, LPCWSTR pipeName)
 			isBusy = true;
 			in->mProxyWindow.SetBusy(true);
 		}
-		in->mRequestBuffer.Append(buffer, bytesRead);
+		in->mRequestBuffer.Append(buffer.data(), bytesRead);
 	}
 
 	CloseHandle(in->mPipeIoEvent);

@@ -196,7 +196,7 @@ bool NormalPriviledgeProcessProxy::PImpl::ReopenPipe()
 
 	auto pipe = CreateNamedPipe(mPipeName, PIPE_ACCESS_DUPLEX, 
 			                        PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT,
-			                        PIPE_UNLIMITED_INSTANCES, 512, 512, 0, sa.get());
+			                        PIPE_UNLIMITED_INSTANCES, 65536, 65536, 0, sa.get());
 	if (pipe == INVALID_HANDLE_VALUE) {
 		spdlog::error("Failed to create named pipe.");
 		return false;
@@ -398,7 +398,7 @@ bool NormalPriviledgeProcessProxy::PImpl::ReceiveResponse(json& json_res)
 	uint64_t start = GetTickCount64();
 
 	std::string response_str;
-	char buff[512];
+	std::vector<char> buff(65536);
 	for(;;) {
 
 		if (launcherapp::core::LauncherProcessContext::GetInstance()->IsShutdownInProgress()) {
@@ -411,7 +411,7 @@ bool NormalPriviledgeProcessProxy::PImpl::ReceiveResponse(json& json_res)
 		}
 
 		DWORD read = 0;
-		if (ReadFile(mPipeHandle, buff, 512, &read, nullptr) == FALSE) {
+		if (ReadFile(mPipeHandle, buff.data(), (DWORD)buff.size(), &read, nullptr) == FALSE) {
 			DWORD err = GetLastError();
 			if (err != 234) {
 				spdlog::error("Failed to read err:{}", err);
@@ -421,8 +421,8 @@ bool NormalPriviledgeProcessProxy::PImpl::ReceiveResponse(json& json_res)
 				spdlog::debug("read more data read:{}", read);
 			}
 		}
-		response_str.insert(response_str.end(), buff, buff + read);
-		if (strchr(buff, '\n') != nullptr) {
+		response_str.insert(response_str.end(), buff.data(), buff.data() + read);
+		if (strchr(buff.data(), '\n') != nullptr) {
 			break;
 		}
 	}
