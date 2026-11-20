@@ -22,6 +22,8 @@ using json = nlohmann::json;
 constexpr LPCTSTR PIPE_NAME_PREFIX = _T("LauncherAppNormalPriviledgePipe-");
 constexpr LPCTSTR NAME_NORMALPRIV_SERVER = _T("LauncherAppNormalPriviledgeServer");
 
+constexpr uint32_t RESPONSE_TIMEOUT_IN_MSEC = 5000; // 5秒
+
 namespace launcherapp { namespace processproxy {
 
 namespace {
@@ -403,7 +405,7 @@ bool NormalPriviledgeProcessProxy::PImpl::ReceiveResponse(json& json_res)
 			spdlog::error("shutdown is in progress.");
 			return false;
 		}
-		if (GetTickCount64()-start >= 2000) {
+		if (GetTickCount64()-start >= RESPONSE_TIMEOUT_IN_MSEC) {
 			spdlog::error("NormalPriviledgeProcessProxy::ReceiveResponse timeout.");
 			return false;
 		}
