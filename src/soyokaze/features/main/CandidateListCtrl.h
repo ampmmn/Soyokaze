@@ -36,8 +36,9 @@ public:
 public:
 	virtual void DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct);
 	afx_msg void OnSetFont(CFont* font, BOOL redraw);
-	/** 候補欄のサイズ変更に合わせて列幅を更新する */
+	// 候補欄のサイズ変更に合わせて列幅を更新する
 	afx_msg void OnSize(UINT type, int cx, int cy);
+	afx_msg void OnNcCalcSize(BOOL bCalcValidRects, NCCALCSIZE_PARAMS* lpncsp);
 
 	DECLARE_MESSAGE_MAP()
 private:

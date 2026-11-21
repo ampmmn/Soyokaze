@@ -54,6 +54,7 @@ CandidateListCtrl::~CandidateListCtrl()
 BEGIN_MESSAGE_MAP(CandidateListCtrl, CListCtrl)
 	ON_WM_SETFONT()
 	ON_WM_SIZE()
+	ON_WM_NCCALCSIZE()
 END_MESSAGE_MAP()
 
 void CandidateListCtrl::OnSetFont(CFont* font, BOOL redraw)
@@ -75,6 +76,13 @@ void CandidateListCtrl::OnSize(UINT type, int cx, int cy)
 {
 	__super::OnSize(type, cx, cy);
 	UpdateSize(cx, cy);
+}
+
+void CandidateListCtrl::OnNcCalcSize(BOOL bCalcValidRects, NCCALCSIZE_PARAMS* lpncsp)
+{
+	// 水平スクロールバーを強制的に非表示にする
+	::ShowScrollBar(GetSafeHwnd(), SB_HORZ, FALSE);
+	__super::OnNcCalcSize(bCalcValidRects, lpncsp);
 }
 
 // 現在選択中のアイテムの領域を取得
