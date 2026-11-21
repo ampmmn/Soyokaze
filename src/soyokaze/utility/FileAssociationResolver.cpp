@@ -31,13 +31,13 @@ bool GetCommandInterpreterPath(CString& path)
 		}
 	}
 
-	TCHAR systemDirectory[MAX_PATH_NTFS]{};
-	UINT directoryLength = GetSystemDirectory(systemDirectory, _countof(systemDirectory));
-	if (directoryLength == 0 || directoryLength >= _countof(systemDirectory)) {
+	std::vector<TCHAR> systemDirectory(MAX_PATH_NTFS, 0);
+	UINT directoryLength = GetSystemDirectory(systemDirectory.data(), (UINT)systemDirectory.size());
+	if (directoryLength == 0 || directoryLength >= systemDirectory.size()) {
 		return false;
 	}
-	PathAppend(systemDirectory, _T("cmd.exe"));
-	path = systemDirectory;
+	PathAppend(systemDirectory.data(), _T("cmd.exe"));
+	path = systemDirectory.data();
 	return Path::FileExists(path) != FALSE;
 }
 
