@@ -2,8 +2,11 @@
 #include "gtest/gtest.h"
 #include "commands/simple_dict/SimpleDictAdhocCommand.h"
 #include "commands/simple_dict/SimpleDictParam.h"
+#include "commands/core/PreviewProvider.h"
+#include "core/IFIDDefine.h"
 #include "macros/core/MacroIF.h"
 #include "macros/core/MacroRepository.h"
+#include "utility/RefPtr.h"
 
 using namespace launcherapp::commands::simple_dict;
 using Action = launcherapp::actions::core::Action;
@@ -116,4 +119,31 @@ TEST_F(SimpleDictAdhocCommandTest, CopyActionDoesNotExpandMacrosWhenDisabled)
 	action->Release();
 
 	EXPECT_EQ(0, mMacro->GetEvaluateCount());
+}
+
+TEST(SimpleDictAdhocCommandPreviewTest, PreviewProviderReturnsNullWhenPreviewIsDisabled)
+{
+	SimpleDictParam param;
+	Record record(_T("key"), _T("value"));
+	SimpleDictAdhocCommand command(param, record);
+
+	RefPtr<launcherapp::core::PreviewProvider> provider;
+	ASSERT_TRUE(command.QueryInterface(IFID_PREVIEWPROVIDER, (void**)&provider));
+	ASSERT_NE(nullptr, provider.get());
+	EXPECT_EQ(nullptr, provider->FetchPreviewWindow());
+}
+
+TEST(SimpleDictAdhocCommandPreviewTest, PreviewProviderReturnsWindowWhenPreviewIsEnabled)
+{
+	SimpleDictParam param;
+	param.mIsUsePreview = TRUE;
+	param.mDescriptionFormat = _T("$key description: $value");
+	Record record(_T("key"), _T("value"));
+	SimpleDictAdhocCommand command(param, record);
+
+	RefPtr<launcherapp::core::PreviewProvider> provider;
+	ASSERT_TRUE(command.QueryInterface(IFID_PREVIEWPROVIDER, (void**)&provider));
+	ASSERT_NE(nullptr, provider.get());
+	EXPECT_NE(nullptr, provider->FetchPreviewWindow());
+	EXPECT_EQ(_T("key description: value"), command.GetDescription());
 }

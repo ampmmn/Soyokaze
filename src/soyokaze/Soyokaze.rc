@@ -785,7 +785,7 @@ BEGIN
     LTEXT           "file:///c:/path/to/... -> c:\\path\\to\\...",IDC_STATIC,31,56,263,8
 END
 
-IDD_COMMAND_SIMPLEDICT DIALOGEX 0, 0, 337, 367
+IDD_COMMAND_SIMPLEDICT DIALOGEX 0, 0, 337, 397
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
 CAPTION "簡易辞書コマンドの編集"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
@@ -796,6 +796,8 @@ BEGIN
     EDITTEXT        IDC_EDIT_DESCRIPTION,104,32,216,14,ES_AUTOHSCROLL
     LTEXT           "Excelファイル(&F):",IDC_STATIC,13,68,87,8
     EDITTEXT        IDC_EDIT_FILEPATH,104,65,152,14,ES_AUTOHSCROLL
+    CONTROL         "<A HREF=""https://sample.com/sample"">設定の手引き</A>",IDC_SYSLINK_TEBIKI,
+                    "SysLink",WS_TABSTOP,261,68,59,9
     LTEXT           "シート名(&S):",IDC_STATIC,13,85,40,8
     EDITTEXT        IDC_EDIT_SHEETNAME,104,82,151,14,ES_AUTOHSCROLL
     LTEXT           "キーのデータ範囲(&Y):",IDC_STATIC,13,102,68,8
@@ -810,30 +812,29 @@ BEGIN
     CONTROL         "一行目をヘッダ行として扱う(&H)",IDC_CHECK_FIRSTROWISHEADER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,13,138,111,10
     CONTROL         "ファイル更新時に通知を行う(&O)",IDC_CHECK_NOTIFYUPDATE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,137,138,113,10
     PUSHBUTTON      "取得内容確認(&T)",IDC_BUTTON_TEST,258,136,65,14
+    GROUPBOX        "候補の表示・マッチング",IDC_STATIC,7,165,319,94
     LTEXT           "説明欄の書式(&E):",IDC_STATIC,13,180,60,8
     EDITTEXT        IDC_EDIT_DESCRIPTIONFORMAT,104,177,151,14,ES_AUTOHSCROLL
     LTEXT           "候補欄の書式(&C):",IDC_STATIC,13,198,60,8
     EDITTEXT        IDC_EDIT_NAMEFORMAT,104,195,151,14,ES_AUTOHSCROLL
     CONTROL         "コマンド名を入力しなくても候補を表示する(&A)",IDC_CHECK_MATCHWITHOUTKEYWORD,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,216,172,10
-    CONTROL         "値でのマッチングも行う(&L)",IDC_CHECK_REVERSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,194,216,114,10
-    LTEXT           "実行する処理(&O):",IDC_STATIC,13,252,63,8
-    CONTROL         "(実行する処理を選択)",IDC_BUTTON_TYPE,"MfcMenuButton",WS_TABSTOP,104,249,151,14
-    LTEXT           "設定内容詳細:",IDC_STATIC,13,269,87,8
-    LTEXT           "スタティック",IDC_STATIC_AFTERDETAIL,104,269,212,35,0,WS_EX_CLIENTEDGE
-    CONTROL         "マクロを展開する(&E)",IDC_CHECK_EXPANDMACRO,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,16,306,83,10
-    LTEXT           "ホットキー(&K):",IDC_STATIC,13,329,85,8
-    EDITTEXT        IDC_EDIT_HOTKEY,104,326,124,14,ES_AUTOHSCROLL
-    DEFPUSHBUTTON   "OK",IDOK,226,344,50,14
-    PUSHBUTTON      "キャンセル",IDCANCEL,280,344,50,14
-    LTEXT           "(メッセージ欄)",IDC_STATIC_STATUSMSG,105,8,204,8
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,217,172,10
+    CONTROL         "値でのマッチングも行う(&L)",IDC_CHECK_REVERSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,194,217,114,10
+    CONTROL         "プレビューを表示する(&P)",IDC_CHECK_PREVIEW,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,234,114,10
     GROUPBOX        "データの取得元",IDC_STATIC,7,53,319,106
-    GROUPBOX        "候補の表示・マッチング",IDC_STATIC,7,165,319,66
-    GROUPBOX        "選択後の処理",IDC_STATIC,8,239,319,81
-    CONTROL         "<A HREF=""https://sample.com/sample"">設定の手引き</A>",IDC_SYSLINK_TEBIKI,
-                    "SysLink",WS_TABSTOP,261,68,59,9
+    LTEXT           "実行する処理(&R):",IDC_STATIC,13,281,63,8
+    CONTROL         "(実行する処理を選択)",IDC_BUTTON_TYPE,"MfcMenuButton",WS_TABSTOP,104,278,151,14
+    LTEXT           "設定内容詳細:",IDC_STATIC,13,298,87,8
+    LTEXT           "スタティック",IDC_STATIC_AFTERDETAIL,104,298,212,35,0,WS_EX_CLIENTEDGE
+    CONTROL         "マクロを展開する(&X)",IDC_CHECK_EXPANDMACRO,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,16,335,83,10
+    LTEXT           "ホットキー(&K):",IDC_STATIC,13,360,85,8
+    EDITTEXT        IDC_EDIT_HOTKEY,104,357,124,14,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "OK",IDOK,226,375,50,14
+    PUSHBUTTON      "キャンセル",IDCANCEL,280,375,50,14
+    LTEXT           "(メッセージ欄)",IDC_STATIC_STATUSMSG,105,8,204,8
+    GROUPBOX        "選択後の処理",IDC_STATIC,8,268,319,81
     CONTROL         "<A HREF=""https://sample.com/sample"">利用可能なマクロ</A>",IDC_SYSLINK_MACRO,
-                    "SysLink",WS_TABSTOP,103,307,59,9
+                    "SysLink",WS_TABSTOP,103,336,59,9
 END
 
 IDD_COMMAND_WATCHPATH DIALOGEX 0, 0, 337, 186
@@ -2109,7 +2110,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 330
         TOPMARGIN, 7
-        BOTTOMMARGIN, 360
+        BOTTOMMARGIN, 390
     END
 
     IDD_COMMAND_WATCHPATH, DIALOG
@@ -2908,6 +2909,7 @@ BEGIN
     50, 0, 50, 0,
     0, 0, 0, 0,
     0, 0, 100, 0,
+    100, 0, 0, 0,
     0, 0, 0, 0,
     0, 0, 100, 0,
     0, 0, 0, 0,
@@ -2922,12 +2924,15 @@ BEGIN
     0, 0, 0, 0,
     0, 0, 0, 0,
     0, 0, 0, 0,
-    0, 0, 0, 0,
     0, 0, 100, 0,
     0, 0, 0, 0,
     0, 0, 100, 0,
     0, 0, 0, 0,
+    0, 0, 100, 0,
     0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
     0, 0, 0, 0,
     0, 0, 100, 0,
     0, 0, 0, 0,
@@ -2938,10 +2943,7 @@ BEGIN
     100, 100, 0, 0,
     100, 100, 0, 0,
     0, 0, 100, 0,
-    0, 100, 100, 0,
-    0, 100, 100, 0,
-    0, 100, 100, 0,
-    100, 0, 0, 0,
+    0, 0, 100, 0,
     100, 0, 0, 0
 END
 

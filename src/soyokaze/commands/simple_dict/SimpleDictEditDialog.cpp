@@ -113,6 +113,7 @@ void SettingDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_REVERSE, in->mParam.mIsEnableReverse);
 	DDX_Check(pDX, IDC_CHECK_NOTIFYUPDATE, in->mParam.mIsNotifyUpdate);
 	DDX_Check(pDX, IDC_CHECK_EXPANDMACRO, in->mParam.mIsExpandMacro);
+	DDX_Check(pDX, IDC_CHECK_PREVIEW, in->mParam.mIsUsePreview);
 	DDX_Control(pDX, IDC_BUTTON_TYPE, in->mMenuTypeBtn);
 	DDX_Text(pDX, IDC_STATIC_AFTERDETAIL, in->mAfterDetail);
 }

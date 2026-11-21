@@ -13,6 +13,7 @@ SimpleDictParam::SimpleDictParam() :
 	mIsEnableReverse(FALSE),
 	mIsNotifyUpdate(FALSE),
 	mIsExpandMacro(FALSE),
+	mIsUsePreview(FALSE),
 	mActionType(2),
 	mAfterCommandParam(_T("$value")),
 	mAfterShowType(0)
@@ -43,6 +44,7 @@ bool SimpleDictParam::operator == (const SimpleDictParam& rhs) const
 	       mIsEnableReverse == rhs.mIsEnableReverse &&
 	       mIsNotifyUpdate == rhs.mIsNotifyUpdate &&
 	       mIsExpandMacro == rhs.mIsExpandMacro &&
+	       mIsUsePreview == rhs.mIsUsePreview &&
 	       mActionType == rhs.mActionType &&
 	       mAfterCommandName == rhs.mAfterCommandName &&
 	       mAfterFilePath == rhs.mAfterFilePath &&
@@ -83,6 +85,7 @@ bool SimpleDictParam::Save(CommandEntryIF* entry)
 	entry->Set(_T("IsEnableReverse"), (bool)mIsEnableReverse);
 	entry->Set(_T("IsNotifyUpdate"), (bool)mIsNotifyUpdate);
 	entry->Set(_T("IsExpandMacro"), (bool)mIsExpandMacro);
+	entry->Set(_T("UsePreview"), (bool)mIsUsePreview);
 	entry->Set(_T("aftertype"), mActionType);
 	entry->Set(_T("aftercommand"), mAfterCommandName);
 	entry->Set(_T("afterfilepath"), mAfterFilePath);
@@ -112,6 +115,7 @@ bool SimpleDictParam::Load(CommandEntryIF* entry)
 	mIsEnableReverse = entry->Get(_T("IsEnableReverse"), false);
 	mIsNotifyUpdate = entry->Get(_T("IsNotifyUpdate"), false);
 	mIsExpandMacro = entry->Get(_T("IsExpandMacro"), false);
+	mIsUsePreview = entry->Get(_T("UsePreview"), false);
 
 	mActionType = entry->Get(_T("aftertype"), 2);
 	mAfterCommandName = entry->Get(_T("aftercommand"), _T(""));
@@ -148,6 +152,7 @@ void SimpleDictParam::swap(SimpleDictParam& rhs)
 	std::swap(mIsEnableReverse, rhs.mIsEnableReverse);
 	std::swap(mIsNotifyUpdate, rhs.mIsNotifyUpdate);
 	std::swap(mIsExpandMacro, rhs.mIsExpandMacro);
+	std::swap(mIsUsePreview, rhs.mIsUsePreview);
 	std::swap(mActionType, rhs.mActionType);
 	std::swap(mAfterCommandName, rhs.mAfterCommandName);
 	std::swap(mAfterFilePath, rhs.mAfterFilePath);

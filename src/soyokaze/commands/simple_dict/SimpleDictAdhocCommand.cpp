@@ -4,6 +4,7 @@
 #include "commands/simple_dict/SimpleDictParam.h"
 #include "commands/common/ExpandFunctions.h"
 #include "commands/common/Clipboard.h"
+#include "commands/common/preview/PreviewWindow.h"
 #include "commands/common/CommandParameterFunctions.h"
 #include "commands/core/CommandRepository.h"
 #include "actions/core/ActionParameter.h"
@@ -216,6 +217,21 @@ CString SimpleDictAdhocCommand::GetSourceName()
 	return in->mParam->mName;
 }
 
+/**
+  選択中の候補の説明をプレビューウインドウに設定する
+  @return プレビューウインドウ。設定で無効の場合はnullptr
+*/
+launcherapp::mainwindow::preview::PreviewWindow* SimpleDictAdhocCommand::FetchPreviewWindow()
+{
+	if (in->mParam->mIsUsePreview == FALSE) {
+		return nullptr;
+	}
+
+	auto previewWindow = launcherapp::commands::common::preview::PreviewWindow::Get();
+	previewWindow->SetPreviewText(GetDescription(), CString(), {});
+	return previewWindow;
+}
+
 bool SimpleDictAdhocCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
 {
 	if (AdhocCommandBase::QueryInterface(ifid, cmd)) {
@@ -225,6 +241,11 @@ bool SimpleDictAdhocCommand::QueryInterface(const launcherapp::core::IFID& ifid,
 	if (ifid == IFID_EXTRACANDIDATE) {
 		AddRef();
 		*cmd = (launcherapp::commands::core::ExtraCandidate*)this;
+		return true;
+	}
+	if (ifid == IFID_PREVIEWPROVIDER) {
+		AddRef();
+		*cmd = static_cast<launcherapp::core::PreviewProvider*>(this);
 		return true;
 	}
 	return false;

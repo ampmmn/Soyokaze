@@ -51,6 +51,8 @@ public:
 	BOOL mIsNotifyUpdate;
 	// マクロを展開する
 	BOOL mIsExpandMacro;
+	// プレビューを表示する
+	BOOL mIsUsePreview;
 	// 後段の処理の種類
 	int mActionType;
 	// 後段のコマンド(mActionType=0の場合)
