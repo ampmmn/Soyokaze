@@ -1,0 +1,18 @@
+profiles:
+  google:
+    site: google
+    title: Google検索
+  bing:
+    site: bing
+    title: Bing検索
+  github:
+    site: github
+    title: GitHubコード検索
+
+sites:
+  google:
+    searchUrl: "https://www.google.com/search?q={query}"
+  bing:
+    searchUrl: "https://www.bing.com/search?q={query}"
+  github:
+    searchUrl: "https://github.com/search?q={query}"
