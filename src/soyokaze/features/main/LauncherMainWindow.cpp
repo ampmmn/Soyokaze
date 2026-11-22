@@ -23,7 +23,6 @@
 #include "core/IFIDDefine.h"
 #include "commands/core/CommandRepository.h"
 #include "actions/core/ActionParameter.h"
-#include "actions/core/ActionParameter.h"
 #include "commands/core/ContextMenuSourceIF.h"
 #include "commands/core/SelectionBehavior.h"
 #include "commands/common/Clipboard.h"
@@ -47,10 +46,8 @@
 #include "features/main/state/MainWindowHiddenState.h"
 #include "features/main/state/MainWindowSearchingState.h"
 #include "macros/core/MacroRepository.h"
-#include "matcher/CommandToken.h"
 #include "features/main/CandidateList.h"
 #include "commands/core/PreviewProvider.h"
-#include "core/IFIDDefine.h"
 #include "features/main/preview/PreviewHostWindow.h"
 #include "features/main/preview/PreviewWindow.h"
 #include <algorithm>
