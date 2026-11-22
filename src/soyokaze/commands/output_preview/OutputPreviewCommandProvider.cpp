@@ -33,7 +33,7 @@ CString OutputPreviewCommandProvider::GetDisplayName()
 
 CString OutputPreviewCommandProvider::GetDescription()
 {
-	return _T("ファイルの実行結果を表示するコマンドです。\n")
+	return _T("【試作】ファイルの実行結果を表示するコマンドです。\n")
 		_T("実行したプログラムの出力結果(標準出力または出力ファイル)を\n")
 		_T("本アプリ内のプレビューウインドウで結果を確認できます。\n")
 		_T("(なお、本コマンドではURLを直接指定したリクエスト実行をサポートしていません)");
