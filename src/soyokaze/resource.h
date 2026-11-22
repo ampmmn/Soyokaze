@@ -491,6 +491,7 @@
 #define IDC_COMBO_POSITION              1163
 #define IDC_COMBO_FONTSIZE              1163
 #define IDC_COMBO_COMMANDS              1163
+#define IDC_COMBO_APPLICATION           1163
 #define IDC_CHECK_VOLUME                1164
 #define IDC_CHECK_EXPANDMACRO           1165
 #define IDC_CHECK_USEAPI                1166

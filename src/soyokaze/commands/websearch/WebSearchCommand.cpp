@@ -3,8 +3,10 @@
 #include "core/IFIDDefine.h"
 #include "commands/websearch/WebSearchAdhocCommand.h"
 #include "commands/websearch/WebSearchCommandParam.h"
+#include "commands/websearch/SearchViewerProxy.h" // 検索ウインドウの登録と表示に使用する
 #include "commands/websearch/WebSearchCommandEditor.h"
 #include "commands/common/CommandParameterFunctions.h"
+#include "commands/common/ExpandFunctions.h" // バッチ実行時のURLを展開する
 #include "actions/mainwindow/MainWindowSetTextAction.h"
 #include "actions/builtin/CallbackAction.h"
 #include "actions/web/OpenURLAction.h"
@@ -26,10 +28,38 @@ struct WebSearchCommand::PImpl
 {
 	int BuildSearchUrlString(Pattern* pattern, CString& displayName, CString& url);
 	int BuildSearchUrlStringAsShortcut(Pattern* pattern, CString& displayName, CString& url);
+	/** 登録済み検索ウインドウ設定を現在のコマンド設定へ同期する */
+	void UpdateSearchViewerRegistration();
+	/** 現在保持している検索ウインドウ登録を解除する */
+	void UnregisterSearchViewer();
 	CommandParam mParam;
+	SearchViewerProxy::RegistrationToken mSearchViewerRegistrationToken{0};
+	CString mRegisteredSearchViewerCommandName;
 
 	CommandIcon mIcon;
 };
+
+/** コマンドが保持している検索ウインドウ登録を解除する */
+void WebSearchCommand::PImpl::UnregisterSearchViewer()
+{
+	if (mSearchViewerRegistrationToken == 0) {
+		return;
+	}
+	SearchViewerProxy::GetInstance()->UnregisterCommand(mRegisteredSearchViewerCommandName, mSearchViewerRegistrationToken);
+	mSearchViewerRegistrationToken = 0;
+	mRegisteredSearchViewerCommandName.Empty();
+}
+
+/** コマンド設定に応じて検索ウインドウ登録を更新する */
+void WebSearchCommand::PImpl::UpdateSearchViewerRegistration()
+{
+	UnregisterSearchViewer();
+	if (mParam.mIsUseSearchViewer == false) {
+		return;
+	}
+	mRegisteredSearchViewerCommandName = mParam.mName;
+	mSearchViewerRegistrationToken = SearchViewerProxy::GetInstance()->RegisterCommand(mParam.mName, mParam.mSearchViewerTitle);
+}
 
 int WebSearchCommand::PImpl::BuildSearchUrlString(Pattern* pattern, CString& displayName, CString& url)
 {
@@ -115,11 +145,19 @@ WebSearchCommand::WebSearchCommand() : in(std::make_unique<PImpl>())
 
 WebSearchCommand::~WebSearchCommand()
 {
+	in->UnregisterSearchViewer();
 }
 
+/** 登録済みの説明文を持つか確認する */
 bool WebSearchCommand::HasRawDescription()
 {
 	return in->mParam.mDescription.IsEmpty() == FALSE;
+}
+
+/** 専用検索ウインドウを検索先として使う設定か確認する */
+bool WebSearchCommand::IsUseSearchViewer() const
+{
+	return in->mParam.mIsUseSearchViewer;
 }
 
 bool WebSearchCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
@@ -167,12 +205,22 @@ bool WebSearchCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 	*action = new launcherapp::actions::builtin::CallbackAction(_T("検索を実行"), [&](Parameter* param, String* errMsg) -> bool {
 
 		auto namedParam = GetNamedParameter(param);
-		if (namedParam->GetNamedParamBool(_T("RUN_AS_BATCH"))) {
-
+		if (namedParam->GetNamedParamBool(_T("RUN_AS_BATCH"))) { // グループ等からの一括実行
 			// URLを生成
 			auto url = in->mParam.mURL;
 			url.Replace(_T("$*"), param->GetParameterString());
 
+			if (in->mParam.mIsUseSearchViewer) { // 設定に応じて専用ウインドウへ検索する
+				auto expandedUrl = url;
+				ExpandArgumentsAndMacros(expandedUrl, param, ArgumentQuoting::None, true);
+				if (SearchViewerProxy::GetInstance()->Open(in->mParam.mName, expandedUrl)) {
+					return true;
+				}
+				if (errMsg) {
+					*errMsg = _T("専用検索ウインドウを開けませんでした");
+				}
+				return false;
+			}
 			launcherapp::actions::web::OpenURLAction action(url);
 			return action.Perform(param, errMsg);
 		}
@@ -260,11 +308,12 @@ bool WebSearchCommand::Load(CommandEntryIF* entry)
 		return false;
 	}
 
-	in->mParam.Load(entry);
+	in->mParam.Load(entry); // 保存済みの検索設定を読み込む
 
 	// ホットキー情報の取得
 	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
-	hotKeyManager->GetKeyBinding(in->mParam.mName, &in->mParam.mHotKeyAttr); 
+	hotKeyManager->GetKeyBinding(in->mParam.mName, &in->mParam.mHotKeyAttr);
+	in->UpdateSearchViewerRegistration(); // 起動時に専用ウインドウ設定を登録する
 
 	return true;
 }
@@ -294,7 +343,8 @@ bool WebSearchCommand::NewDialog(
 
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
 	auto command = std::make_unique<WebSearchCommand>();
-	command->in->mParam = cmdEditor->GetParam();
+	command->in->mParam = cmdEditor->GetParam(); // ダイアログの設定を新しいコマンドへ適用する
+	command->in->UpdateSearchViewerRegistration();
 
 	newCmd = std::move(command);
 
@@ -323,8 +373,9 @@ bool WebSearchCommand::Apply(launcherapp::core::CommandEditor* editor)
 		return false;
 	}
 
-	in->mParam = cmdEditor->GetParam();
+	in->mParam = cmdEditor->GetParam(); // 編集結果でコマンド設定を更新する
 	in->mIcon.Reset();
+	in->UpdateSearchViewerRegistration(); // 変更後の検索先設定を登録し直す
 	return true;
 }
 
@@ -338,7 +389,8 @@ bool WebSearchCommand::CreateNewInstanceFrom(launcherapp::core::CommandEditor* e
 
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
 	auto newCmd = make_refptr<WebSearchCommand>();
-	newCmd->in->mParam = cmdEditor->GetParam();
+	newCmd->in->mParam = cmdEditor->GetParam(); // 複製する設定を新しいコマンドへ適用する
+	newCmd->in->UpdateSearchViewerRegistration();
 
 	if (newCmdPtr) {
 		*newCmdPtr = newCmd.release();

@@ -1,8 +1,10 @@
 #include "pch.h"
 #include "WebSearchProvider.h"
 #include "commands/websearch/WebSearchCommand.h"
+#include "commands/websearch/SearchViewerProxy.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/core/CommandFile.h"
+#include "setting/AppPreference.h"
 #include "resource.h"
 #include <list>
 #include <functional>
@@ -26,10 +28,14 @@ REGISTER_COMMANDPROVIDER(WebSearchProvider)
 
 WebSearchProvider::WebSearchProvider()
 {
+	AppPreference::Get()->RegisterListener(this, _T("WebSearchProvider"));
+	// ここがUIスレッドである保証はないが、結果的にここはメインスレッド(UIスレッド)で実行される
+	launcherapp::commands::websearch::SearchViewerProxy::GetInstance()->InitializeOnUiThread();
 }
 
 WebSearchProvider::~WebSearchProvider()
 {
+	AppPreference::Get()->UnregisterListener(this);
 }
 
 CString WebSearchProvider::GetName()
@@ -84,6 +90,23 @@ bool WebSearchProvider::LoadFrom(CommandEntryIF* entry, Command** retCommand)
 	ASSERT(retCommand);
 	*retCommand = command.release();
 	return true;
+}
+
+void WebSearchProvider::OnAppFirstBoot()
+{
+}
+
+void WebSearchProvider::OnAppNormalBoot()
+{
+}
+
+void WebSearchProvider::OnAppPreferenceUpdated()
+{
+}
+
+void WebSearchProvider::OnAppExit()
+{
+	SearchViewerProxy::GetInstance()->CloseAll();
 }
 
 // Providerが扱うコマンド種別(表示名)を列挙

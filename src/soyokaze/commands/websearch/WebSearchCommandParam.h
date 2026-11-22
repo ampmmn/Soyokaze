@@ -29,8 +29,9 @@ public:
 	CommandHotKeyAttribute mHotKeyAttr;
 
 	bool mIsEnableShortcut;
-
-	// アイコンデータ(空の場合はデフォルトアイコンを使用)
+	bool mIsUseSearchViewer{ false };
+	CString mSearchViewerTitle{};
+	// アイコンデータ(空の場合はデフォルトアイコンを使用します)
 	std::vector<uint8_t> mIconData;
 };
 

@@ -63,6 +63,9 @@
     <ClCompile Include="..\testcode\soyokaze\commands\alias\AliasCommandTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\common\ExpandFunctionsTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\common\SubProcessTest.cpp" />
+    <ClCompile Include="..\testcode\soyokaze\commands\websearch\SearchViewerWindowTest.cpp" />
+    <ClCompile Include="..\testcode\soyokaze\commands\websearch\SearchViewerProxyTest.cpp" />
+    <ClCompile Include="..\testcode\soyokaze\commands\websearch\WebSearchCommandParamTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\processproxy\NormalPriviledgeProcessProxyTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\common\CandidateExclusionListTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\core\CommandQueryDefaultResultTest.cpp" />

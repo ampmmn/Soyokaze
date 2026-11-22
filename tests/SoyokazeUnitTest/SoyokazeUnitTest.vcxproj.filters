@@ -130,6 +130,9 @@
     <Filter Include="soyokaze\commands\plugin">
       <UniqueIdentifier>{6cbd7330-58cc-4383-a831-712c2e1202ca}</UniqueIdentifier>
     </Filter>
+    <Filter Include="soyokaze\commands\websearch">
+      <UniqueIdentifier>{e3c770b1-5d6f-4fa6-8f37-1f7e22d36a58}</UniqueIdentifier>
+    </Filter>
     <Filter Include="launcher_proxy">
       <UniqueIdentifier>{46b6495c-da65-41db-8bd1-d143493fe58e}</UniqueIdentifier>
     </Filter>
@@ -431,6 +434,15 @@
     </ClCompile>
     <ClCompile Include="..\testcode\soyokaze\commands\common\SubProcessTest.cpp">
       <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\commands\websearch\SearchViewerWindowTest.cpp">
+      <Filter>soyokaze\commands\websearch</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\commands\websearch\SearchViewerProxyTest.cpp">
+      <Filter>soyokaze\commands\websearch</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\commands\websearch\WebSearchCommandParamTest.cpp">
+      <Filter>soyokaze\commands\websearch</Filter>
     </ClCompile>
     <ClCompile Include="..\testcode\soyokaze\utility\CommandLineArgumentTest.cpp">
       <Filter>ソース ファイル</Filter>

@@ -57,6 +57,7 @@ struct SettingDialog::PImpl
 	CString mOrgName;
 
 	int mIsEnableShortcut{false};
+	int mApplication{0}; // 検索先コンボボックスの選択値
 
 	// メッセージ欄
 	CString mMessage;
@@ -69,6 +70,7 @@ struct SettingDialog::PImpl
 	CMenu mMenuForSiteBtn;
 
 	HotKeyControl mHotKey;
+	CComboBox mApplicationCombo; // 検索先の選択コントロール
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -128,7 +130,11 @@ void SettingDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_DESCRIPTION, in->mParam.mDescription);
 	DDX_Text(pDX, IDC_EDIT_URL, in->mParam.mURL);
 	DDX_Check(pDX, IDC_CHECK_ENABLESHORTCUT, in->mIsEnableShortcut);
-	DDX_Control(pDX, IDC_BUTTON_MENU, in->mSiteMenuBtn);
+	// 検索先と専用ウインドウのタイトルを設定項目へ結び付ける
+	DDX_CBIndex(pDX, IDC_COMBO_APPLICATION, in->mApplication);
+	DDX_Text(pDX, IDC_EDIT_TITLE, in->mParam.mSearchViewerTitle); // 専用検索ウインドウのタイトル
+	DDX_Control(pDX, IDC_BUTTON_MENU, in->mSiteMenuBtn); // URLプリセットメニュー
+	DDX_Control(pDX, IDC_COMBO_APPLICATION, in->mApplicationCombo); // 検索先選択コンボボックス
 }
 
 BEGIN_MESSAGE_MAP(SettingDialog, launcherapp::control::SinglePageDialog)
@@ -137,6 +143,8 @@ BEGIN_MESSAGE_MAP(SettingDialog, launcherapp::control::SinglePageDialog)
 	ON_WM_CTLCOLOR()
 	ON_MESSAGE(WM_APP + 11, OnUserMessageIconChanged)
 	ON_BN_CLICKED(IDC_BUTTON_MENU, OnSiteMenuBtnClicked)
+	// 検索先の選択変更に応じてタイトル欄の表示を更新する
+	ON_CBN_SELCHANGE(IDC_COMBO_APPLICATION, OnApplicationChanged)
 	ON_MESSAGE(WM_APP + 1, OnUserMessageHotKeyChange)
 END_MESSAGE_MAP()
 
@@ -148,7 +156,7 @@ BOOL SettingDialog::OnInitDialog()
 	in->mHotKey.SubclassDlgItem(IDC_EDIT_HOTKEY, this);
 	in->mHotKey.SetNotifyId(WM_APP+1);
 
-	in->InitSiteMenu();
+	in->InitSiteMenu(); // URLプリセットメニューを初期化する
 
 	in->mIconLabelPtr->SubclassDlgItem(IDC_STATIC_ICON, this);
 	in->mIconLabelPtr->EnableIconChange();
@@ -163,7 +171,8 @@ BOOL SettingDialog::OnInitDialog()
 	caption += suffix;
 	SetWindowText(caption);
 
-	in->mIsEnableShortcut = in->mParam.mIsEnableShortcut;
+	in->mIsEnableShortcut = in->mParam.mIsEnableShortcut; // 保存済み設定を画面へ反映する
+	in->mApplication = in->mParam.mIsUseSearchViewer ? 1 : 0; // 既定値はブラウザー
 
 	if (in->mParam.mIconData.empty() == false) {
 		SetIcon(IconLoader::Get()->LoadIconFromStream(in->mParam.mIconData));
@@ -171,6 +180,7 @@ BOOL SettingDialog::OnInitDialog()
 
 	UpdateStatus();
 	UpdateData(FALSE);
+	OnApplicationChanged(); // 初期選択に合わせてタイトル欄を隠す
 
 	ScopeAttachThreadInput scope;
 	SetForegroundWindow();
@@ -219,6 +229,8 @@ void SettingDialog::UpdateStatus()
 void SettingDialog::OnOK()
 {
 	UpdateData();
+	// コンボボックスの選択を検索先設定へ反映する
+	in->mParam.mIsUseSearchViewer = in->mApplication == 1;
 
 	const CString& url = in->mParam.mURL;
 	if (url.Find(_T("$*")) == -1) {
@@ -231,11 +243,21 @@ void SettingDialog::OnOK()
 	__super::OnOK();
 }
 
+/** 入力内容を取得して設定可能状態を更新する */
 void SettingDialog::OnUpdateStatus()
 {
 	UpdateData();
 	UpdateStatus();
 	UpdateData(FALSE);
+}
+
+/** 検索先に応じて専用検索ウインドウのタイトル欄を表示する */
+void SettingDialog::OnApplicationChanged()
+{
+	UpdateData(TRUE);
+	const int visibility = in->mApplication == 1 ? SW_SHOW : SW_HIDE;
+	GetDlgItem(IDC_STATIC_TITLE)->ShowWindow(visibility);
+	GetDlgItem(IDC_EDIT_TITLE)->ShowWindow(visibility);
 }
 
 

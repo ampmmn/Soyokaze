@@ -16,7 +16,10 @@ public:
 	WebSearchCommand();
 	virtual ~WebSearchCommand();
 
+	/** 登録済みの説明文を持つか確認する */
 	bool HasRawDescription();
+	/** 専用検索ウインドウを検索先として使う設定か確認する */
+	bool IsUseSearchViewer() const;
 
 // Comand
 	CString GetName() override;

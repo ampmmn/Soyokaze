@@ -1,6 +1,7 @@
 #pragma once
 
 #include "commands/common/UserCommandProviderBase.h"
+#include "setting/AppPreferenceListenerIF.h"
 
 namespace launcherapp {
 namespace commands {
@@ -8,7 +9,8 @@ namespace websearch {
 
 
 class WebSearchProvider :
-	public launcherapp::commands::common::UserCommandProviderBase
+	public launcherapp::commands::common::UserCommandProviderBase,
+	public AppPreferenceListenerIF
 {
 private:
 	WebSearchProvider();
@@ -36,6 +38,16 @@ public:
 // UserCommandProviderBase
 	void OnBeforeLoad() override;
 	bool LoadFrom(CommandEntryIF* entry, Command** command) override;
+
+// AppPreferenceListenerIF
+	/** 初回起動時の通知を受け取る */
+	void OnAppFirstBoot() override;
+	/** 通常起動時の通知を受け取る */
+	void OnAppNormalBoot() override;
+	/** アプリ設定更新時の通知を受け取る */
+	void OnAppPreferenceUpdated() override;
+	/** アプリ終了時に専用検索ウインドウを解放する */
+	void OnAppExit() override;
 };
 
 

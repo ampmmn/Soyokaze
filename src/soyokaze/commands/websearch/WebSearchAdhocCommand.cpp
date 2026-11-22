@@ -4,6 +4,9 @@
 #include "commands/websearch/WebSearchCommand.h"
 #include "commands/websearch/WebSearchCommandParam.h"
 #include "actions/web/OpenURLAction.h"
+#include "actions/builtin/CallbackAction.h"
+#include "commands/common/ExpandFunctions.h"
+#include "commands/websearch/SearchViewerProxy.h" // 専用検索ウインドウへの要求を送る
 #include "commands/core/CommandRepository.h"
 #include "resource.h"
 #include <vector>
@@ -24,6 +27,7 @@ struct WebSearchAdhocCommand::PImpl
 	WebSearchCommand* mBaseCommand{nullptr};
 	CString mURL;
 	CString mErrorMsg;
+	bool mIsUseSearchViewer{false};
 };
 
 IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(WebSearchAdhocCommand)
@@ -31,7 +35,7 @@ IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(WebSearchAdhocCommand)
 WebSearchAdhocCommand::WebSearchAdhocCommand(
 	WebSearchCommand* baseCommand,
  	const CString& displayName,
- 	const CString& showUrl
+	const CString& showUrl
 ) : 
 	AdhocCommandBase(displayName, baseCommand->HasRawDescription() ? baseCommand->GetDescription() : showUrl),
 	in(std::make_unique<PImpl>())
@@ -39,6 +43,7 @@ WebSearchAdhocCommand::WebSearchAdhocCommand(
 	in->mBaseCommand = baseCommand;
 	baseCommand->AddRef();
 	in->mURL = showUrl;
+	in->mIsUseSearchViewer = baseCommand->IsUseSearchViewer();
 }
 
 WebSearchAdhocCommand::~WebSearchAdhocCommand()
@@ -54,14 +59,40 @@ CString WebSearchAdhocCommand::GetTypeDisplayName()
 	return TEXT_TYPE;
 }
 
+/**
+  検索先の設定と修飾キーに応じたアクションを生成する
+  @return アクションを生成した場合はtrue
+  @param[in] hotkeyAttr 起動時の修飾キー
+  @param[out] action 生成したアクション
+*/
 bool WebSearchAdhocCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 {
-	if (hotkeyAttr.GetModifiers() != 0) {
+	const bool isDefaultBrowserAction = hotkeyAttr.GetModifiers() == MOD_CONTROL && hotkeyAttr.GetVKCode() == VK_RETURN;
+	if (hotkeyAttr.GetModifiers() != 0 && (in->mIsUseSearchViewer == false || isDefaultBrowserAction == false)) {
 		return false;
 	}
-	auto a = new actions::web::OpenURLAction(in->mURL);
-	a->SetDisplayName(_T("検索を実行"));
-	*action = a;
+
+	if (in->mIsUseSearchViewer && isDefaultBrowserAction == false) {
+		const CString commandName = in->mBaseCommand->GetName();
+		const CString url = in->mURL;
+		auto viewerAction = new launcherapp::actions::builtin::CallbackAction(_T("検索を実行"), [commandName, url](Parameter* param, String* errMsg) -> bool {
+			auto expandedUrl = url;
+			launcherapp::commands::common::ExpandArgumentsAndMacros(expandedUrl, param, launcherapp::commands::common::ArgumentQuoting::None, true);
+			if (SearchViewerProxy::GetInstance()->Open(commandName, expandedUrl)) {
+				return true;
+			}
+			if (errMsg) {
+				*errMsg = _T("専用検索ウインドウを開けませんでした");
+			}
+			return false;
+		});
+		*action = viewerAction;
+		return true;
+	}
+
+	auto browserAction = new actions::web::OpenURLAction(in->mURL);
+	browserAction->SetDisplayName(isDefaultBrowserAction ? _T("既定のWebブラウザで検索") : _T("検索を実行"));
+	*action = browserAction;
 	return true;
 }
 
@@ -86,10 +117,7 @@ int WebSearchAdhocCommand::GetMenuItemCount()
 bool WebSearchAdhocCommand::GetMenuItem(int index, Action** action)
 {
 	if (index == 0) {
-		auto a = new actions::web::OpenURLAction(in->mURL);
-		a->SetDisplayName(_T("検索を実行"));
-		*action = a;
-		return true;
+		return GetAction(HOTKEY_ATTR(0, VK_RETURN), action);
 	}
 	return false;
 }

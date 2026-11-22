@@ -655,6 +655,8 @@
     <ClInclude Include="commands\webhistory\WebHistoryTempDirectory.h" />
     <ClInclude Include="commands\websearch\WebSearchAdhocCommand.h" />
     <ClInclude Include="commands\websearch\WebSearchCommandEditor.h" />
+    <ClInclude Include="commands\websearch\SearchViewerProxy.h" />
+    <ClInclude Include="commands\websearch\SearchViewerWindow.h" />
     <ClInclude Include="commands\win32menu\UIElementAliasMap.h" />
     <ClInclude Include="commands\win32menu\Win32MenuAdhocCommand.h" />
     <ClInclude Include="commands\win32menu\Win32MenuCommandProvider.h" />
@@ -1483,6 +1485,8 @@
     <ClCompile Include="commands\websearch\WebSearchCommandParam.cpp" />
     <ClCompile Include="commands\websearch\WebSearchProvider.cpp" />
     <ClCompile Include="commands\websearch\WebSearchSettingDialog.cpp" />
+    <ClCompile Include="commands\websearch\SearchViewerProxy.cpp" />
+    <ClCompile Include="commands\websearch\SearchViewerWindow.cpp" />
     <ClCompile Include="hotkey\AppHotKey.cpp" />
     <ClCompile Include="hotkey\CommandHotKeyManager.cpp" />
     <ClCompile Include="commands/core\CommandQueryItem.cpp" />

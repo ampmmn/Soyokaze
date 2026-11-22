@@ -642,6 +642,12 @@
     <ClInclude Include="commands\websearch\WebSearchSettingDialog.h">
       <Filter>commands\websearch</Filter>
     </ClInclude>
+    <ClInclude Include="commands\websearch\SearchViewerProxy.h">
+      <Filter>commands\websearch</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\websearch\SearchViewerWindow.h">
+      <Filter>commands\websearch</Filter>
+    </ClInclude>
     <ClInclude Include="utility\RegistryKey.h">
       <Filter>utility</Filter>
     </ClInclude>
@@ -2529,6 +2535,12 @@
       <Filter>commands\websearch</Filter>
     </ClCompile>
     <ClCompile Include="commands\websearch\WebSearchSettingDialog.cpp">
+      <Filter>commands\websearch</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\websearch\SearchViewerProxy.cpp">
+      <Filter>commands\websearch</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\websearch\SearchViewerWindow.cpp">
       <Filter>commands\websearch</Filter>
     </ClCompile>
     <ClCompile Include="utility\RegistryKey.cpp">
