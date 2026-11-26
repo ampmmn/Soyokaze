@@ -47,10 +47,10 @@ std::vector<CString> ParseArgument(const CString& value)
 	return args;
 }
 
-// クォートした値をcmd.exeのechoに渡して終了コードを取得する
-bool RunCmdWithQuotedArgument(const CString& value, DWORD& exitCode)
+// 指定した引数をcmd.exeのechoに渡して終了コードを取得する
+bool RunCmdWithArgument(const CString& argument, DWORD& exitCode)
 {
-	CString commandLine = _T("cmd.exe /d /c echo ") + QuoteArgument(value);
+	CString commandLine = _T("cmd.exe /d /c echo ") + argument;
 	STARTUPINFO startupInfo{};
 	startupInfo.cb = sizeof(startupInfo);
 	startupInfo.dwFlags = STARTF_USESHOWWINDOW;
@@ -84,6 +84,12 @@ bool RunCmdWithQuotedArgument(const CString& value, DWORD& exitCode)
 	CloseHandle(processInfo.hThread);
 	CloseHandle(processInfo.hProcess);
 	return waitResult == WAIT_OBJECT_0 && gotExitCode != FALSE;
+}
+
+// クォートした値をcmd.exeのechoに渡して終了コードを取得する
+bool RunCmdWithQuotedArgument(const CString& value, DWORD& exitCode)
+{
+	return RunCmdWithArgument(QuoteArgument(value), exitCode);
 }
 
 } // namespace
@@ -182,7 +188,7 @@ TEST(CommandLineArgumentTest, ReplaceQuotedPlaceholderQuotesValue)
 
 	ReplaceQuotedPlaceholder(text, _T("$target"), _T("http://example.com/"));
 
-	EXPECT_STREQ(_T("--target=\"http://example.com/\""), (LPCTSTR)text);
+	EXPECT_STREQ(_T("\"--target=http://example.com/\""), (LPCTSTR)text);
 }
 
 TEST(CommandLineArgumentTest, ReplaceQuotedPlaceholderDoesNotDoubleQuoteWhenAlreadyQuoted)
@@ -191,7 +197,58 @@ TEST(CommandLineArgumentTest, ReplaceQuotedPlaceholderDoesNotDoubleQuoteWhenAlre
 
 	ReplaceQuotedPlaceholder(text, _T("$target"), _T("http://example.com/"));
 
-	EXPECT_STREQ(_T("--target=\"http://example.com/\""), (LPCTSTR)text);
+	EXPECT_STREQ(_T("\"--target=http://example.com/\""), (LPCTSTR)text);
+}
+
+TEST(CommandLineArgumentTest, ReplaceQuotedPlaceholderWithinPathArgument)
+{
+	CString text(_T("C:\\path\\$select\\xxx"));
+
+	ReplaceQuotedPlaceholder(text, _T("$select"), _T("2"));
+
+	EXPECT_STREQ(_T("\"C:\\path\\2\\xxx\""), (LPCTSTR)text);
+	auto args = ParseArgument(text);
+	ASSERT_EQ(1, (int)args.size());
+	EXPECT_STREQ(_T("C:\\path\\2\\xxx"), (LPCTSTR)args[0]);
+}
+
+TEST(CommandLineArgumentTest, ReplaceQuotedPlaceholderWithinQuotedPathArgument)
+{
+	CString text(_T("\"C:\\Program Files\\$select\\xxx\""));
+
+	ReplaceQuotedPlaceholder(text, _T("$select"), _T("folder name"));
+
+	EXPECT_STREQ(_T("\"C:\\Program Files\\folder name\\xxx\""), (LPCTSTR)text);
+	auto args = ParseArgument(text);
+	ASSERT_EQ(1, (int)args.size());
+	EXPECT_STREQ(_T("C:\\Program Files\\folder name\\xxx"), (LPCTSTR)args[0]);
+}
+
+TEST(CommandLineArgumentTest, CompositeArgumentDoesNotBreakCmdCommandParsing)
+{
+	std::vector<CString> values = {
+		_T("safe & exit /b 17 & rem "),
+		_T("safe | exit /b 17 & rem "),
+	};
+
+	for (const auto& value : values) {
+		CString text(_T("C:\\root\\$select\\file"));
+		ReplaceQuotedPlaceholder(text, _T("$select"), value);
+		auto args = ParseArgument(text);
+		ASSERT_EQ(1, (int)args.size());
+		CString expected = _T("C:\\root\\") + value + _T("\\file");
+		EXPECT_STREQ((LPCTSTR)expected, (LPCTSTR)args[0]);
+
+		DWORD exitCode = 1;
+		ASSERT_TRUE(RunCmdWithArgument(text, exitCode));
+		EXPECT_EQ(0u, exitCode);
+	}
+
+	CString text(_T("C:\\root\\$select\\file"));
+	ReplaceQuotedPlaceholder(text, _T("$select"), _T("safe\" & exit /b 17 & rem \""));
+	DWORD exitCode = 1;
+	ASSERT_TRUE(RunCmdWithArgument(text, exitCode));
+	EXPECT_EQ(0u, exitCode);
 }
 
 TEST(CommandLineArgumentTest, QuotedValuesDoNotBreakCmdCommandParsing)

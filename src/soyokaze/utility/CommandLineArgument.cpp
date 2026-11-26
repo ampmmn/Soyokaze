@@ -69,6 +69,60 @@ bool IsDefinedEnvVariable(const CString& name)
 	return size != 0;
 }
 
+// 引用符が直前のバックスラッシュでエスケープされているか
+bool IsEscapedQuote(const CString& text, int index)
+{
+	int backslashCount = 0;
+	for (int pos = index - 1; pos >= 0 && text[pos] == _T('\\'); --pos) {
+		++backslashCount;
+	}
+	return (backslashCount % 2) != 0;
+}
+
+// コマンドライン上の1引数を、Windowsの規則で解析する
+bool ParseArgument(const CString& text, CString& value)
+{
+	CString commandLine = _T("dummy ") + text;
+	int argc = 0;
+	LPWSTR* argv = ::CommandLineToArgvW(commandLine, &argc);
+	if (argv == nullptr) {
+		return false;
+	}
+
+	bool isParsed = argc == 2;
+	if (isParsed) {
+		value = argv[1];
+	}
+	::LocalFree(argv);
+	return isParsed;
+}
+
+// プレースホルダを含む引数を置換し、引数全体を引用する
+CString ReplacePlaceholderInArgument(const CString& argument, LPCTSTR placeholder, const CString& value)
+{
+	if (argument.Find(placeholder) < 0) {
+		return argument;
+	}
+
+	CString parsedArgument;
+	if (ParseArgument(argument, parsedArgument) == false) {
+		// 不正な引数テンプレートでも、選択値を無引用で挿入しない
+		CString escapedArgument = argument;
+		CString quotedValue = QuoteArgument(value);
+		int pos = 0;
+		int placeholderLength = static_cast<int>(_tcslen(placeholder));
+		while ((pos = escapedArgument.Find(placeholder, pos)) >= 0) {
+			escapedArgument.Delete(pos, placeholderLength);
+			escapedArgument.Insert(pos, quotedValue);
+			pos += quotedValue.GetLength();
+		}
+		return escapedArgument;
+	}
+
+	parsedArgument.Replace(placeholder, value);
+	return QuoteArgument(parsedArgument);
+}
+
 } // namespace
 
 /**
@@ -136,29 +190,40 @@ bool ContainsExpandableEnvReference(const CString& value)
 }
 
 /**
-  文字列中のプレースホルダを、値をエスケープしたうえで置換する
-  プレースホルダがダブルクォートで囲まれている場合は内側だけエスケープする
+  コマンドライン中のプレースホルダを、引数単位で安全に置換する
+  プレースホルダを含む引数全体を引用し、値が引数の一部でも正しく渡す
   @param[in,out] text 置換する文字列
   @param[in] placeholder 置換対象のプレースホルダ
   @param[in] value 置き換える値
 */
 void ReplaceQuotedPlaceholder(CString& text, LPCTSTR placeholder, const CString& value)
 {
-	int placeholderLength = static_cast<int>(_tcslen(placeholder));
+	CString result;
+	int length = text.GetLength();
+	int tokenStart = 0;
+	bool isInsideQuotes = false;
 
-	int pos = 0;
-	while ((pos = text.Find(placeholder, pos)) >= 0) {
-		bool isQuoted = pos > 0 && pos + placeholderLength < text.GetLength() &&
-			text[pos - 1] == _T('"') && text[pos + placeholderLength] == _T('"');
+	for (int index = 0; index <= length; ++index) {
+		bool isEnd = index == length;
+		bool isSeparator = isEnd ||
+			((text[index] == _T(' ') || text[index] == _T('\t')) && isInsideQuotes == false);
+		if (isSeparator) {
+			CString argument = text.Mid(tokenStart, index - tokenStart);
+			result += ReplacePlaceholderInArgument(argument, placeholder, value);
 
-		CString replacement = isQuoted ?
-			EscapeArgumentValue(value) :
-			QuoteArgument(value);
+			if (isEnd == false) {
+				result += text[index];
+				tokenStart = index + 1;
+			}
+			continue;
+		}
 
-		text.Delete(pos, placeholderLength);
-		text.Insert(pos, replacement);
-		pos = pos + replacement.GetLength();
+		if (text[index] == _T('"') && IsEscapedQuote(text, index) == false) {
+			isInsideQuotes = !isInsideQuotes;
+		}
 	}
+
+	text = result;
 }
 
 }
