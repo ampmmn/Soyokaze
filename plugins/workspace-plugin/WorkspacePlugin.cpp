@@ -29,35 +29,76 @@ extern HMODULE g_hModule;
 
 namespace {
 
+// YAML解析ライブラリの名前空間を短縮して記述する。
 namespace ryml = c4::yml;
 
-struct Command { std::vector<std::string> folder; std::map<std::string, std::vector<std::string>> file; };
+// ワークスペース項目を開くためのコマンド設定。
+struct Command {
+	// フォルダを開くコマンドの引数。
+	std::vector<std::string> folder;
+	// 拡張子またはdefaultごとのファイル用コマンド引数。
+	std::map<std::string, std::vector<std::string>> file;
+};
+
+// 設定ファイルから読み込んだワークスペース1件分の検索・実行設定。
 struct Workspace {
+	// インデックス作成対象となるルートディレクトリ。
 	std::vector<std::filesystem::path> roots;
+	// このワークスペースから検索結果に返す項目数の上限。
 	int limit{(std::numeric_limits<int>::max)()};
+	// インデックス作成時の最大階層。-1は深さ制限なし。
 	int maxDepth{-1};
+	// 検索を発動するワード。空の場合は発動ワードを使わない。
 	std::string trigger;
+	// インデックス対象とするファイルの拡張子。
 	std::vector<std::string> extensions;
+	// インデックス対象とするファイル名の部分一致パターン。
 	std::vector<std::string> includeFiles;
+	// インデックスから除外するファイル名の部分一致パターン。
 	std::vector<std::string> excludeFiles;
+	// インデックスから除外するディレクトリ名の部分一致パターン。
 	std::vector<std::string> excludeDirectories;
+	// このワークスペースの項目を開くコマンド設定。
 	Command command;
 };
-struct Entry {
-	std::string name;
-	std::string path;
-	bool directory{false};
-	const Command* command{nullptr};
-	HICON icon{nullptr};
-};
-struct Match { std::vector<int> indexes; std::vector<int> levels; std::string error; std::mutex mutex; };
 
+// 検索インデックスに登録するファイルまたはディレクトリ1件分の情報。
+struct Entry {
+	// 検索対象となる表示名（発動ワードとルートからの相対パス）。
+	std::string name;
+	// 対象項目のフルパス。
+	std::string path;
+	// 対象項目がディレクトリの場合はtrue。
+	bool directory{false};
+	// この項目が属するワークスペースのコマンド設定。
+	const Command* command{nullptr};
+};
+
+// 1回の検索結果と、その実行時に発生したエラー情報。
+struct Match {
+	// gEntries内の検索結果項目番号。levelsの同じ位置と対応する。
+	std::vector<int> indexes;
+	// 各検索結果のマッチレベル。indexesの同じ位置と対応する。
+	std::vector<int> levels;
+	// 検索結果の実行時に発生したエラーメッセージ。
+	std::string error;
+	// エラーメッセージへの同時アクセスを保護する。
+	std::mutex mutex;
+};
+
+// プラグインの共有状態へのアクセスを保護する。
 std::mutex gMutex;
+// 本体から渡された関数テーブルのコピー。
 LAUNCHER_FUNCTION_TABLE gFunctions{};
+// 読み込んだワークスペース設定の一覧。
 std::vector<Workspace> gWorkspaces;
+// 全ワークスペースをまとめた検索インデックス。
 std::vector<Entry> gEntries;
+// 設定読み込みと検索インデックス構築を行うバックグラウンドスレッド。
 std::thread gIndexThread;
+// プラグインの初期化が完了したことを示す。
 std::atomic<bool> gInitialized{false};
+// 検索インデックスの構築が完了し、検索を受け付けられることを示す。
 std::atomic<bool> gReady{false};
 
 /**
@@ -547,7 +588,7 @@ void AddEntry(const std::filesystem::path& path, const std::filesystem::path& ro
 	const std::string relative = ToUtf8(path.lexically_relative(root).wstring());
 	if (relative.empty()) return;
 	result.push_back({ workspace.trigger.empty() ? relative : workspace.trigger + " " + relative,
-		ToUtf8(path.wstring()), directory, &workspace.command, nullptr });
+		ToUtf8(path.wstring()), directory, &workspace.command });
 }
 
 /**
@@ -808,14 +849,9 @@ int GetIcon(LNCRPLUGINMATCHHANDLE handle, int index, HICON* icon)
 	const Entry* entry = nullptr;
 	if (!GetEntry(handle, index, entry)) return 1;
 	std::lock_guard<std::mutex> lock(gMutex);
-	if (entry->icon && gFunctions.HasIcon && gFunctions.HasIcon(entry->icon)) {
-		*icon = entry->icon;
-		return 0;
-	}
 	if (!gFunctions.LoadIconFromPath) return 1;
-	const_cast<Entry*>(entry)->icon = gFunctions.LoadIconFromPath(entry->path.c_str());
-	*icon = entry->icon;
-	return entry->icon ? 0 : 1;
+	*icon = gFunctions.LoadIconFromPath(entry->path.c_str());
+	return *icon ? 0 : 1;
 }
 
 /**
@@ -894,14 +930,12 @@ LNCRPLUGINMATCHHANDLE Query(void* context, MATCHER_FUNCTION_TABLE* table)
 }
 
 /**
-  プラグインのインデックスと保持中の本体側リソースを解放する
+  プラグインのインデックスと本体側関数テーブルを解放する
 */
 void FinalizeApi()
 {
 	if (gIndexThread.joinable()) gIndexThread.join();
 	std::lock_guard<std::mutex> lock(gMutex);
-	// アイコンの所有権は本体側にあるため、ハンドルを破棄せず参照だけを破棄する。
-	for (auto& entry : gEntries) entry.icon = nullptr;
 	gEntries.clear(); gWorkspaces.clear(); gFunctions = LAUNCHER_FUNCTION_TABLE();
 	gReady = false; gInitialized = false;
 }

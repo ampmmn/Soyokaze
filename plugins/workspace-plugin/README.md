@@ -84,9 +84,8 @@
 - 名前は <search-trigger-word> <検索ルートディレクトリからの相対パス>とする。
  - 発動ワードがない場合は相対パスのみを表示
 - 説明は<フルパス>とする
-- アイコンはファイルやフォルダに関連付けられたアイコンを本体の`LAUNCHER_FUNCTION_TABLE::LoadIconFromPath`で取得する
-- 取得したHICONは本体側が管理するため、プラグイン側で破棄しない
-- キャッシュしたアイコンは`LAUNCHER_FUNCTION_TABLE::HasIcon`で有効性を確認し、無効な場合は再取得する
+- アイコンは毎回、本体の`LAUNCHER_FUNCTION_TABLE::LoadIconFromPath`で取得する。本体側の`IconLoader`がアイコンをキャッシュする
+- 取得したHICONは本体側が管理するため、プラグイン側で保持・破棄しない
 
 ### 例
 
