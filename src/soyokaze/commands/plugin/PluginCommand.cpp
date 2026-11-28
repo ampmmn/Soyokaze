@@ -48,6 +48,39 @@ bool GetStringValue(LNCRPLUGINFUNC_GETSTRING func, LNCRPLUGINMATCHHANDLE match,
 	return true;
 }
 
+/**
+  修飾キーに対応するガイド文字列を取得する
+  @param[in] func ガイド文字列取得関数
+  @param[in] match プラグインの検索結果ハンドル
+  @param[in] index 検索結果内のコマンド番号
+  @param[in] modifier 修飾キーのビットマスク
+  @param[out] value 取得した文字列
+  @return true:取得成功 false:取得失敗
+*/
+bool GetGuideValue(LNCRPLUGINFUNC_GETGUIDESTRING func, LNCRPLUGINMATCHHANDLE match,
+	int index, unsigned int modifier, CString& value)
+{
+	value.Empty();
+	// 必要なバッファサイズを問い合わせてから、ガイド文字列を取得する。
+	int len = func(match, index, modifier, nullptr, 0);
+	if (len < 0) {
+		return false;
+	}
+	if (len == 0) {
+		return true;
+	}
+
+	std::vector<char> buffer(static_cast<size_t>(len), '\0');
+	if (func(match, index, modifier, buffer.data(), buffer.size()) < 0) {
+		return false;
+	}
+	buffer.back() = '\0';
+
+	std::string utf8(buffer.data());
+	UTF2UTF(utf8, value);
+	return true;
+}
+
 class PluginAction : public launcherapp::actions::core::ActionBase
 {
 public:
@@ -56,11 +89,12 @@ public:
 	  @param[in] module プラグインモジュール
 	  @param[in] match プラグインの検索結果ハンドル
 	  @param[in] index 検索結果内のコマンド番号
+	  @param[in] modifier 修飾キーのビットマスク
 	  @param[in] displayName アクションの表示名
 	*/
 	PluginAction(const PluginModulePtr& module, const PluginMatchPtr& match, int index,
-	            const CString& displayName) :
-		mModule(module), mMatch(match), mIndex(index), mDisplayName(displayName)
+	            unsigned int modifier, const CString& displayName) :
+		mModule(module), mMatch(match), mIndex(index), mModifier(modifier), mDisplayName(displayName)
 	{
 	}
 
@@ -100,7 +134,7 @@ public:
 
 		// Executeにはコマンド名を含めず、実行時引数だけを渡す。
 		int result = mModule->mExportTable.Execute(
-			static_cast<LNCRPLUGINMATCHHANDLE>(mMatch.get()), mIndex, argc, argv.data());
+			static_cast<LNCRPLUGINMATCHHANDLE>(mMatch.get()), mIndex, mModifier, argc, argv.data());
 		if (result == 0) {
 			return true;
 		}
@@ -122,6 +156,7 @@ private:
 	PluginModulePtr mModule;
 	PluginMatchPtr mMatch;
 	int mIndex;
+	unsigned int mModifier;
 	CString mDisplayName;
 };
 
@@ -184,18 +219,18 @@ bool PluginCommand::CanExecute(String* reasonMsg)
 */
 bool PluginCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 {
-	// 修飾キー付き起動と出力先不在の場合はアクションを生成しない。
-	if (hotkeyAttr.GetModifiers() != 0 || action == nullptr) {
+	if (action == nullptr) {
 		return false;
 	}
 
+	auto modifier = hotkeyAttr.GetModifiers();
 	CString guide;
-	if (GetStringValue(mModule->mExportTable.GetGuide,
-		static_cast<LNCRPLUGINMATCHHANDLE>(mMatch.get()), mIndex, guide) == false) {
+	if (GetGuideValue(mModule->mExportTable.GetGuide,
+		static_cast<LNCRPLUGINMATCHHANDLE>(mMatch.get()), mIndex, modifier, guide) == false) {
 		return false;
 	}
 
-	*action = new PluginAction(mModule, mMatch, mIndex, guide);
+	*action = new PluginAction(mModule, mMatch, mIndex, modifier, guide);
 	return true;
 }
 

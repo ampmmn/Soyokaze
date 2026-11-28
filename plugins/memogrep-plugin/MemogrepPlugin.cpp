@@ -517,7 +517,7 @@ int Initialize(LAUNCHER_FUNCTION_TABLE* table, const char** pluginInfo)
   "displayName": "memogrep-plugin",
   "pluginId": "F82EB950-7524-4AD4-A945-BA607E83E612",
   "pluginVersion": "0.1.0",
-  "pluginApiVersion": 102,
+  "pluginApiVersion": 103,
   "pluginDescription": "ChangeLogメモをインクリメンタル検索する",
   "pluginDeveloper": "ampmmn",
   "pluginLicenseName": "MIT License",
@@ -705,8 +705,9 @@ std::wstring BuildCommandLine(const Entry& entry)
 	return commandLine;
 }
 
-int Execute(LNCRPLUGINMATCHHANDLE handle, int index, int argc, char** argv)
+int Execute(LNCRPLUGINMATCHHANDLE handle, int index, unsigned int modifier, int argc, char** argv)
 {
+	UNREFERENCED_PARAMETER(modifier);
 	UNREFERENCED_PARAMETER(argc);
 	UNREFERENCED_PARAMETER(argv);
 	const Entry* entry = nullptr;
@@ -803,7 +804,8 @@ extern "C" int LNCRPLUGIN_API LNCRPLUGIN_Bind(int version, LNCRPLUGIN_EXPORTTABL
 	table->GetDescription = [](LNCRPLUGINMATCHHANDLE h, int i, char* b, size_t l) {
 		return GetString(h, i, b, l, &GetDescription);
 	};
-	table->GetGuide = [](LNCRPLUGINMATCHHANDLE h, int i, char* b, size_t l) {
+	table->GetGuide = [](LNCRPLUGINMATCHHANDLE h, int i, unsigned int modifier, char* b, size_t l) {
+		UNREFERENCED_PARAMETER(modifier);
 		return GetString(h, i, b, l, &GetGuide);
 	};
 	table->GetTypeDisplayName = [](LNCRPLUGINMATCHHANDLE h, int i, char* b, size_t l) {

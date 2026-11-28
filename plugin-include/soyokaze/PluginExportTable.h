@@ -15,7 +15,7 @@ extern "C" {
 
 // プラグインのバージョン。このヘッダの定義を変更したら、数値を上げる
 // プラグイン側はLNCRPLUGIN_Bind内で想定するプラグインバージョンかどうかをチェックし、対応できない場合はエラーを返す
-#define PLUGINVERSION 102
+#define PLUGINVERSION 103
 
 // キーワードマッチ結果を表すハンドル。ハンドルの実体はプラグイン実装側が定義する内部データ。
 // このため、LNCRPLUGINMATCHHANDLEという型はプラグイン間で共通となるが、異なるプラグイン間での互換性はない。
@@ -110,13 +110,21 @@ typedef int (*LNCRPLUGINFUNC_GETMATCHLEVEL)(LNCRPLUGINMATCHHANDLE h, int index);
 // バッファ不足時は与えられた領域分だけコピーし(\0終端もする)、実際にコピーしたバイト数(つまりlen)を返すものとする
 typedef int (*LNCRPLUGINFUNC_GETSTRING)(LNCRPLUGINMATCHHANDLE h, int index, char*, size_t len);
 
+// ガイド文字列を取得する関数
+// 戻り値はコピーされたバイト数。lenが0のときは\0も含めた必要なバッファ長(バイト単位)、-1はエラー(インデックス不正、モディファイアに対応したアクションがない)
+// modifierにはMOD_SHIFT、MOD_CONTROL、MOD_ALT、MOD_WINのビットマスクが渡される。修飾キーなしは0。
+// バッファ長は\0終端を含む長さ。
+// バッファ不足時は与えられた領域分だけコピーし(\0終端もする)、実際にコピーしたバイト数(つまりlen)を返すものとする
+typedef int (*LNCRPLUGINFUNC_GETGUIDESTRING)(LNCRPLUGINMATCHHANDLE h, int index, unsigned int modifier, char*, size_t len);
+
 // 実行可能か
 // 0:実行不可  0以外:実行可能
 typedef int (*LNCRPLUGINFUNC_CANEXECUTE)(LNCRPLUGINMATCHHANDLE h, int index);
 
 // 機能を実行する
+// modifierにはGetGuideに渡されたものと同じ修飾キーのビットマスクが渡される。
 // 戻り値は成功時0、その他は失敗
-typedef int (*LNCRPLUGINFUNC_EXECUTE)(LNCRPLUGINMATCHHANDLE h, int index, int argc, char** argv);
+typedef int (*LNCRPLUGINFUNC_EXECUTE)(LNCRPLUGINMATCHHANDLE h, int index, unsigned int modifier, int argc, char** argv);
 
 // アイコンを得る
 // 処理成功時、第2引数でアイコンハンドルを返す
@@ -163,7 +171,7 @@ typedef struct _LNCRPLUGIN_EXPORTTABLE
 	// 説明を得る
 	LNCRPLUGINFUNC_GETSTRING GetDescription;
 	// ガイド欄の文字列を得る
-	LNCRPLUGINFUNC_GETSTRING GetGuide;
+	LNCRPLUGINFUNC_GETGUIDESTRING GetGuide;
 	// コマンド種別を得る
 	LNCRPLUGINFUNC_GETSTRING GetTypeDisplayName;
 	// 実行可能かを調べる(0:不可 1:可能)

@@ -112,7 +112,7 @@ JSONには次のキーを指定する。これら以外のキーを追加して�
   "displayName": "プラグイン表示名",
   "pluginId": "プラグインを識別する一意な文字列",
   "pluginVersion": "1.0.0",
-  "pluginApiVersion": 102,
+  "pluginApiVersion": 103,
   "pluginDescription": "プラグインの概要",
   "pluginDeveloper": "制作者名など",
   "pluginLicenseName": "プラグインのライセンス",

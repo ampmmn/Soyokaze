@@ -171,10 +171,10 @@ participant PluginAction
 participant Plugin
 
 User -> PluginCommand : GetAction(hotkeyAttr)
-PluginCommand -> Plugin : GetGuide
+PluginCommand -> Plugin : GetGuide(modifier)
 PluginCommand --> User : PluginAction
 User -> PluginAction : Perform(param)
-PluginAction -> Plugin : Execute(match, index, argc, argv)
+PluginAction -> Plugin : Execute(match, index, modifier, argc, argv)
 Plugin --> PluginAction : 実行結果
 PluginAction --> User : 成否・エラーメッセージ
 @enduml
@@ -182,6 +182,7 @@ PluginAction --> User : 成否・エラーメッセージ
 
 `Execute`に渡す`argv`にはコマンド名を含めず、実行時引数だけを含める。
 引数がない場合は`argc`が0となり、`argv`には終端の`nullptr`だけを持つ配列を渡す。
+修飾キーはアクション生成時に`GetGuide`へ渡し、生成したアクションが実行時に同じ値を`Execute`へ渡す。
 
 本体側の文字列はUTF-16、プラグインAPIの文字列はUTF-8を前提としているため、API呼び出しの境界で相互変換する。
 

@@ -707,17 +707,18 @@ std::wstring Quote(const std::wstring& value)
   検索結果のファイルまたはフォルダを設定された方法で実行する
   @param[in] handle 検索結果ハンドル
   @param[in] index 実行対象の検索結果番号
+  @param[in] modifier 修飾キーのビットマスク
   @param[in] argc 実行時引数の数
   @param[in] argv 実行時引数
   @return 成功時は0、失敗時は1
 */
-int Execute(LNCRPLUGINMATCHHANDLE handle, int index, int argc, char** argv)
+int Execute(LNCRPLUGINMATCHHANDLE handle, int index, unsigned int modifier, int argc, char** argv)
 {
 	UNREFERENCED_PARAMETER(argc); UNREFERENCED_PARAMETER(argv);
 	const Entry* entry = nullptr;
 	if (!GetEntry(handle, index, entry)) return 1;
 	if (!entry->directory) {
-		if ((GetKeyState(VK_CONTROL) & 0x8000) != 0) {
+		if (modifier == MOD_CONTROL) {
 			// Ctrl押下時はファイルを実行せず、親フォルダを本体側のファイラーで開く。
 			LPFUNCOPENFOLDER openFolder = nullptr;
 			{
@@ -836,7 +837,7 @@ int InitializeApi(LAUNCHER_FUNCTION_TABLE* table, const char** pluginInfo)
   "displayName": "workspace-plugin",
   "pluginId": "A555448F-0F0F-429B-B783-CB2D4A6CA2D9",
   "pluginVersion": "0.1.0",
-  "pluginApiVersion": 102,
+  "pluginApiVersion": 103,
   "pluginDescription": "指定ディレクトリ以下のファイルやディレクトリ要素を検索する",
   "pluginDeveloper": "ampmmn",
   "pluginLicenseName": "MIT License",
@@ -946,8 +947,16 @@ extern "C" int LNCRPLUGIN_API LNCRPLUGIN_Bind(int version, LNCRPLUGIN_EXPORTTABL
 	table->GetDescription = [](LNCRPLUGINMATCHHANDLE handle, int index, char* buffer, size_t length) {
 		const Entry* entry = nullptr; return GetEntry(handle, index, entry) ? CopyString(entry->path, buffer, length) : -1;
 	};
-	table->GetGuide = [](LNCRPLUGINMATCHHANDLE, int, char* buffer, size_t length) {
-		return CopyString("Open workspace item", buffer, length);
+	table->GetGuide = [](LNCRPLUGINMATCHHANDLE handle, int index, unsigned int modifier, char* buffer, size_t length) {
+		const Entry* entry = nullptr;
+		if (!GetEntry(handle, index, entry)) return -1;
+		if (modifier == 0) {
+			return CopyString("Open workspace item", buffer, length);
+		}
+		if (modifier == MOD_CONTROL && !entry->directory) {
+			return CopyString("Open containing folder", buffer, length);
+		}
+		return -1;
 	};
 	table->GetTypeDisplayName = [](LNCRPLUGINMATCHHANDLE, int, char* buffer, size_t length) {
 		return CopyString("Workspace", buffer, length);

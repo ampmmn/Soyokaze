@@ -123,7 +123,7 @@ int Initialize(LAUNCHER_FUNCTION_TABLE* table, const char** plugin_info);
   "displayName": "プラグイン表示名",
   "pluginId": "プラグインを識別する一意な文字列",
   "pluginVersion": "1.0.0",
-  "pluginApiVersion": 102,
+  "pluginApiVersion": 103,
   "pluginDescription": "プラグインの概要",
   "pluginDeveloper": "制作者名など",
   "pluginLicenseName": "プラグインのライセンス",
@@ -180,8 +180,8 @@ int GetName(LNCRPLUGINMATCHHANDLE handle, int index,
             char* buffer, size_t length);
 int GetDescription(LNCRPLUGINMATCHHANDLE handle, int index,
             char* buffer, size_t length);
-int GetGuide(LNCRPLUGINMATCHHANDLE handle, int index,
-            char* buffer, size_t length);
+int GetGuide(LNCRPLUGINMATCHHANDLE handle, int index, unsigned int modifier,
+             char* buffer, size_t length);
 int GetTypeDisplayName(LNCRPLUGINMATCHHANDLE handle, int index,
             char* buffer, size_t length);
 ```
@@ -200,6 +200,7 @@ int GetTypeDisplayName(LNCRPLUGINMATCHHANDLE handle, int index,
 バッファを渡した場合は、文字列を`\0`で終端してください。バッファが不足する場合も、可能な範囲で終端文字を含めてコピーします。エラー時は-1を返します。
 
 `GetGuide`で取得した文字列は、コマンド実行時のアクション表示に使用されます。
+`modifier`には`MOD_SHIFT`、`MOD_CONTROL`、`MOD_ALT`、`MOD_WIN`のビットマスクが渡されます。対応するアクションがない場合は-1を返してください。
 
 ### `CanExecute`
 
@@ -215,10 +216,11 @@ int CanExecute(LNCRPLUGINMATCHHANDLE handle, int index);
 
 ```cpp
 int Execute(LNCRPLUGINMATCHHANDLE handle, int index,
-            int argc, char** argv);
+            unsigned int modifier, int argc, char** argv);
 ```
 
 検索結果を実行します。成功時は0、失敗時は0以外を返してください。
+`modifier`には`GetGuide`と同じ修飾キーのビットマスクが渡されます。修飾キーなしは0です。
 
 `argv`には実行時引数だけが含まれます。コマンド名は含まれません。
 
@@ -313,7 +315,7 @@ int OpenFolder(const char* path);
 static LAUNCHER_FUNCTION_TABLE gLauncher{};
 static const char* gPluginInfo = R"({
   "pluginId": "sample-plugin",
-  "pluginApiVersion": 102
+  "pluginApiVersion": 103
 })";
 
 int Initialize(LAUNCHER_FUNCTION_TABLE* table, const char** plugin_info)
@@ -357,7 +359,7 @@ const char* gPluginInfo = R"({
   "displayName": "Sample Plugin",
   "pluginId": "sample-plugin",
   "pluginVersion": "1.0.0",
-  "pluginApiVersion": 102,
+  "pluginApiVersion": 103,
   "pluginDescription": "Sample plugin command"
 })";
 
@@ -424,8 +426,9 @@ int GetDescription(LNCRPLUGINMATCHHANDLE handle, int, char* buffer, size_t lengt
     return CopyString(static_cast<Match*>(handle)->description, buffer, length);
 }
 
-int GetGuide(LNCRPLUGINMATCHHANDLE handle, int, char* buffer, size_t length)
+int GetGuide(LNCRPLUGINMATCHHANDLE handle, int, unsigned int modifier, char* buffer, size_t length)
 {
+    (void)modifier;
     return CopyString(static_cast<Match*>(handle)->guide, buffer, length);
 }
 
@@ -439,8 +442,9 @@ int CanExecute(LNCRPLUGINMATCHHANDLE, int)
     return 1;
 }
 
-int Execute(LNCRPLUGINMATCHHANDLE, int, int argc, char** argv)
+int Execute(LNCRPLUGINMATCHHANDLE, int, unsigned int modifier, int argc, char** argv)
 {
+    (void)modifier;
     if (gLauncher.InfoLog != nullptr) {
         gLauncher.InfoLog(argc == 0 ? "hello executed" : argv[0]);
     }
