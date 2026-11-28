@@ -6,6 +6,7 @@
 #define RYML_SINGLE_HDR_DEFINE_NOW
 #include "rapidyaml/rapidyaml.hpp"
 #include <soyokaze/PluginExportTable.h>
+#include "WorkspaceIndex.h"
 #include <shellapi.h>
 #pragma comment(lib, "Shell32.lib")
 
@@ -28,6 +29,17 @@
 extern HMODULE g_hModule;
 
 namespace {
+
+using workspaceplugin::BuildFullPath;
+using workspaceplugin::BuildRelativePath;
+using workspaceplugin::Entry;
+using workspaceplugin::EntryId;
+using workspaceplugin::InvalidEntryId;
+using workspaceplugin::InvalidRootId;
+using workspaceplugin::RootId;
+using workspaceplugin::RootInfo;
+using workspaceplugin::StringId;
+using workspaceplugin::StringPool;
 
 // YAML解析ライブラリの名前空間を短縮して記述する。
 namespace ryml = c4::yml;
@@ -62,18 +74,6 @@ struct Workspace {
 	Command command;
 };
 
-// 検索インデックスに登録するファイルまたはディレクトリ1件分の情報。
-struct Entry {
-	// 検索対象となる表示名（発動ワードとルートからの相対パス）。
-	std::string name;
-	// 対象項目のフルパス。
-	std::string path;
-	// 対象項目がディレクトリの場合はtrue。
-	bool directory{false};
-	// この項目が属するワークスペースのコマンド設定。
-	const Command* command{nullptr};
-};
-
 // 1回の検索結果と、その実行時に発生したエラー情報。
 struct Match {
 	// gEntries内の検索結果項目番号。levelsの同じ位置と対応する。
@@ -94,6 +94,10 @@ LAUNCHER_FUNCTION_TABLE gFunctions{};
 std::vector<Workspace> gWorkspaces;
 // 全ワークスペースをまとめた検索インデックス。
 std::vector<Entry> gEntries;
+// 各ルートの基準パスと所属ワークスペース。
+std::vector<RootInfo> gRoots;
+// 重複する項目名を共有する文字列プール。
+StringPool gStrings;
 // 設定読み込みと検索インデックス構築を行うバックグラウンドスレッド。
 std::thread gIndexThread;
 // プラグインの初期化が完了したことを示す。
@@ -577,48 +581,82 @@ bool Included(const std::filesystem::path& path, const Workspace& workspace)
 /**
   検索用インデックスへファイルまたはディレクトリを追加する
   @param[in] path 追加対象のパス
-  @param[in] root 相対パス計算の基準ルート
   @param[in] directory ディレクトリかどうか
-  @param[in] workspace 適用するワークスペース設定
+  @param[in] parentId 親ディレクトリの項目ID
+  @param[in] rootId ルート情報のID
+  @param[in,out] strings 文字列プール
   @param[out] result エントリの追加先
+  @return 追加した項目のID
 */
-void AddEntry(const std::filesystem::path& path, const std::filesystem::path& root,
-	bool directory, const Workspace& workspace, std::vector<Entry>& result)
+EntryId AddEntry(const std::filesystem::path& path, bool directory, EntryId parentId,
+	RootId rootId, StringPool& strings, std::vector<Entry>& result)
 {
-	const std::string relative = ToUtf8(path.lexically_relative(root).wstring());
-	if (relative.empty()) return;
-	result.push_back({ workspace.trigger.empty() ? relative : workspace.trigger + " " + relative,
-		ToUtf8(path.wstring()), directory, &workspace.command });
+	if (result.size() >= static_cast<size_t>((std::numeric_limits<int>::max)())) {
+		throw std::length_error("Workspace entry capacity exceeded.");
+	}
+	if (result.size() >= static_cast<size_t>(InvalidEntryId)) {
+		throw std::length_error("Workspace entry ID capacity exceeded.");
+	}
+	const EntryId id = static_cast<EntryId>(result.size());
+	const StringId nameId = strings.Intern(path.filename().wstring());
+	result.push_back({ parentId, nameId, directory, rootId });
+	return id;
 }
 
 /**
   指定ルート以下を走査して検索用インデックスを作成する
   @param[in] root 走査対象のルートディレクトリ
-  @param[in] workspace 適用するワークスペース設定
+	@param[in] workspace 適用するワークスペース設定
+	@param[in] workspaceIndex 適用するワークスペースの番号
+	@param[in,out] roots ルート情報一覧
+	@param[in,out] strings 文字列プール
   @param[out] result エントリの追加先
 */
-void IndexRoot(const std::filesystem::path& root, const Workspace& workspace, std::vector<Entry>& result)
+void IndexRoot(const std::filesystem::path& root, const Workspace& workspace,
+	uint32_t workspaceIndex, std::vector<RootInfo>& roots, StringPool& strings,
+	std::vector<Entry>& result)
 {
 	if (!std::filesystem::is_directory(root)) {
 		Log(&LAUNCHER_FUNCTION_TABLE::WarnLog, "Skipping directory: %s", ToUtf8(root.wstring()).c_str());
 		return;
 	}
+	if (roots.size() >= static_cast<size_t>(InvalidRootId)) {
+		throw std::length_error("Workspace root ID capacity exceeded.");
+	}
+	const RootId rootId = static_cast<RootId>(roots.size());
+	roots.push_back({ root, workspaceIndex });
 	std::error_code error;
 	std::filesystem::recursive_directory_iterator iterator(root,
 		std::filesystem::directory_options::skip_permission_denied, error);
 	const std::filesystem::recursive_directory_iterator end;
+	std::vector<EntryId> directoryIds;
 	while (iterator != end) {
 		const auto path = iterator->path();
 		const bool directory = iterator->is_directory(error);
 		const int depth = static_cast<int>(iterator.depth());
 		if (error) error.clear();
+		if (depth < 0) throw std::logic_error("Invalid workspace index depth.");
+		const size_t depthIndex = static_cast<size_t>(depth);
+		EntryId parentId = InvalidEntryId;
+		if (depthIndex > 0) {
+			if (depthIndex - 1 >= directoryIds.size() || directoryIds[depthIndex - 1] == InvalidEntryId) {
+				throw std::logic_error("Workspace index parent directory is missing.");
+			}
+			parentId = directoryIds[depthIndex - 1];
+		}
 		// 深度制限または除外条件に該当するディレクトリは再帰走査しない。
 		if (workspace.maxDepth >= 0 && depth > workspace.maxDepth) {
 			if (directory) iterator.disable_recursion_pending();
 		} else if (Excluded(path, directory, workspace)) {
 			if (directory) iterator.disable_recursion_pending();
 		} else if (directory || Included(path, workspace)) {
-			AddEntry(path, root, directory, workspace, result);
+			const EntryId id = AddEntry(path, directory, parentId, rootId, strings, result);
+			if (directory) {
+				if (directoryIds.size() <= depthIndex) {
+					directoryIds.resize(depthIndex + 1, InvalidEntryId);
+				}
+				directoryIds[depthIndex] = id;
+			}
 		}
 		iterator.increment(error);
 	}
@@ -632,23 +670,40 @@ void BuildIndex(std::filesystem::path settingsPath)
 {
 	std::vector<Workspace> workspaces;
 	std::vector<Entry> entries;
+	std::vector<RootInfo> roots;
+	StringPool strings;
 	try {
 		if (LoadSettings(settingsPath, workspaces)) {
 			// 設定順を維持したまま各ルートを走査し、検索結果を一つの配列へまとめる。
-			for (const auto& workspace : workspaces)
-				for (const auto& root : workspace.roots) IndexRoot(root, workspace, entries);
+			for (size_t workspaceIndex = 0; workspaceIndex < workspaces.size(); ++workspaceIndex) {
+				if (workspaceIndex >= static_cast<size_t>(InvalidRootId)) {
+					throw std::length_error("Workspace index capacity exceeded.");
+				}
+				for (const auto& root : workspaces[workspaceIndex].roots) {
+					IndexRoot(root, workspaces[workspaceIndex], static_cast<uint32_t>(workspaceIndex),
+						roots, strings, entries);
+				}
+			}
+		}
+		// 走査後はルートパスをRootInfoだけに残し、ワークスペース側の重複分を解放する。
+		for (auto& workspace : workspaces) {
+			std::vector<std::filesystem::path>().swap(workspace.roots);
 		}
 	}
 	catch (const std::exception& exception) {
 		Log(&LAUNCHER_FUNCTION_TABLE::ErrorLog, "Failed to build workspace index: %s", exception.what());
 		workspaces.clear();
 		entries.clear();
+		roots.clear();
+		strings = StringPool();
 	}
 	{
 		std::lock_guard<std::mutex> lock(gMutex);
 		// 検索スレッドで構築したデータを検索側から参照できる状態へ切り替える。
 		gWorkspaces = std::move(workspaces);
 		gEntries = std::move(entries);
+		gRoots = std::move(roots);
+		gStrings = std::move(strings);
 	}
 	gReady = true;
 	Log(&LAUNCHER_FUNCTION_TABLE::InfoLog, "Workspace index is ready: %zu entries.", gEntries.size());
@@ -659,9 +714,10 @@ void BuildIndex(std::filesystem::path settingsPath)
   @param[in] handle 検索結果ハンドル
   @param[in] index 検索結果内の番号
   @param[out] entry 取得したインデックス項目
+  @param[out] entryId 取得した項目ID。省略可能
   @return 取得成功時はtrue
 */
-bool GetEntry(LNCRPLUGINMATCHHANDLE handle, int index, const Entry*& entry)
+bool GetEntry(LNCRPLUGINMATCHHANDLE handle, int index, const Entry*& entry, EntryId* entryId = nullptr)
 {
 	if (!handle) return false;
 	const auto* match = static_cast<const Match*>(handle);
@@ -670,7 +726,21 @@ bool GetEntry(LNCRPLUGINMATCHHANDLE handle, int index, const Entry*& entry)
 	const int entryIndex = match->indexes[index];
 	if (entryIndex < 0 || entryIndex >= static_cast<int>(gEntries.size())) return false;
 	entry = &gEntries[entryIndex];
+	if (entryId) *entryId = static_cast<EntryId>(entryIndex);
 	return true;
+}
+
+/**
+  検索項目が属するワークスペースを取得する
+  @param[in] entry 検索項目
+  @return ワークスペース。関連情報が不正な場合はnullptr
+*/
+const Workspace* GetWorkspace(const Entry& entry)
+{
+	if (entry.rootId >= gRoots.size()) return nullptr;
+	const size_t workspaceIndex = gRoots[entry.rootId].workspaceIndex;
+	if (workspaceIndex >= gWorkspaces.size()) return nullptr;
+	return &gWorkspaces[workspaceIndex];
 }
 
 /**
@@ -757,8 +827,15 @@ int Execute(LNCRPLUGINMATCHHANDLE handle, int index, unsigned int modifier, int 
 {
 	UNREFERENCED_PARAMETER(argc); UNREFERENCED_PARAMETER(argv);
 	const Entry* entry = nullptr;
-	if (!GetEntry(handle, index, entry)) return 1;
-	if (!entry->directory) {
+	EntryId entryId = InvalidEntryId;
+	if (!GetEntry(handle, index, entry, &entryId)) return 1;
+	const Workspace* workspace = GetWorkspace(*entry);
+	if (!workspace) return 1;
+	const std::filesystem::path path = BuildFullPath(entryId, gEntries, gRoots, gStrings);
+	if (path.empty()) return 1;
+	const std::wstring widePath = path.wstring();
+	const std::string utf8Path = ToUtf8(widePath);
+	if (!entry->isDirectory) {
 		if (modifier == MOD_CONTROL) {
 			// Ctrl押下時はファイルを実行せず、親フォルダを本体側のファイラーで開く。
 			LPFUNCOPENFOLDER openFolder = nullptr;
@@ -771,22 +848,21 @@ int Execute(LNCRPLUGINMATCHHANDLE handle, int index, unsigned int modifier, int 
 				static_cast<Match*>(handle)->error = "OpenFolder is unavailable.";
 				return 1;
 			}
-			const auto folder = std::filesystem::path(ToWide(entry->path)).parent_path();
+			const auto folder = path.parent_path();
 			const auto folderPath = ToUtf8(folder.wstring());
 			return openFolder(folderPath.c_str()) == 0 ? 0 : 1;
 		}
 		// 拡張子に対応するコマンドを探し、なければdefaultコマンドへフォールバックする。
-		const auto extension = Lower(ToUtf8(std::filesystem::path(ToWide(entry->path)).extension().wstring()));
-		auto command = entry->command->file.find(extension);
-		if (command == entry->command->file.end()) command = entry->command->file.find("default");
-		if (command == entry->command->file.end()) {
+		const auto extension = Lower(ToUtf8(path.extension().wstring()));
+		auto command = workspace->command.file.find(extension);
+		if (command == workspace->command.file.end()) command = workspace->command.file.find("default");
+		if (command == workspace->command.file.end()) {
 			// コマンド設定がない場合は、ファイルの関連付けを使って起動する。
 			SHELLEXECUTEINFOW shellExecute{};
 			shellExecute.cbSize = sizeof(shellExecute);
 			shellExecute.fMask = SEE_MASK_FLAG_NO_UI;
 			shellExecute.lpVerb = L"open";
-			const std::wstring path = ToWide(entry->path);
-			shellExecute.lpFile = path.c_str();
+			shellExecute.lpFile = widePath.c_str();
 			if (!ShellExecuteExW(&shellExecute)) {
 				std::lock_guard<std::mutex> lock(static_cast<Match*>(handle)->mutex);
 				static_cast<Match*>(handle)->error = "Failed to open file with the associated application.";
@@ -796,12 +872,12 @@ int Execute(LNCRPLUGINMATCHHANDLE handle, int index, unsigned int modifier, int 
 			return 0;
 		}
 		const auto& arguments = command->second;
-		const std::string directory = ToUtf8(std::filesystem::path(ToWide(entry->path)).parent_path().wstring());
+		const std::string directory = ToUtf8(path.parent_path().wstring());
 		std::wstring commandLine;
 		// {path}および{dir}を置換した各引数を引用符付きで連結してコマンドラインを作る。
 		for (const auto& argument : arguments) {
 			if (!commandLine.empty()) commandLine += L' ';
-			commandLine += Quote(ToWide(ReplacePath(argument, entry->path, directory)));
+			commandLine += Quote(ToWide(ReplacePath(argument, utf8Path, directory)));
 		}
 		std::vector<wchar_t> commandLineBuffer(commandLine.begin(), commandLine.end());
 		commandLineBuffer.push_back(L'\0');
@@ -816,12 +892,12 @@ int Execute(LNCRPLUGINMATCHHANDLE handle, int index, unsigned int modifier, int 
 		CloseHandle(process.hThread); CloseHandle(process.hProcess);
 		return 0;
 	}
-	const auto& arguments = entry->command->folder;
+	const auto& arguments = workspace->command.folder;
 	std::wstring commandLine;
 	// フォルダ用コマンドにも対象フォルダのパスを{path}および{dir}へ展開する。
 	for (const auto& argument : arguments) {
 		if (!commandLine.empty()) commandLine += L' ';
-		commandLine += Quote(ToWide(ReplacePath(argument, entry->path, entry->path)));
+		commandLine += Quote(ToWide(ReplacePath(argument, utf8Path, utf8Path)));
 	}
 	std::vector<wchar_t> command(commandLine.begin(), commandLine.end()); command.push_back(L'\0');
 	STARTUPINFOW startup{}; startup.cb = sizeof(startup);
@@ -847,10 +923,15 @@ int GetIcon(LNCRPLUGINMATCHHANDLE handle, int index, HICON* icon)
 {
 	if (!icon) return 1;
 	const Entry* entry = nullptr;
-	if (!GetEntry(handle, index, entry)) return 1;
+	EntryId entryId = InvalidEntryId;
+	if (!GetEntry(handle, index, entry, &entryId)) return 1;
+	UNREFERENCED_PARAMETER(entry);
+	const auto path = BuildFullPath(entryId, gEntries, gRoots, gStrings);
+	if (path.empty()) return 1;
+	const std::string pathUtf8 = ToUtf8(path.wstring());
 	std::lock_guard<std::mutex> lock(gMutex);
 	if (!gFunctions.LoadIconFromPath) return 1;
-	*icon = gFunctions.LoadIconFromPath(entry->path.c_str());
+	*icon = gFunctions.LoadIconFromPath(pathUtf8.c_str());
 	return *icon ? 0 : 1;
 }
 
@@ -906,16 +987,18 @@ LNCRPLUGINMATCHHANDLE Query(void* context, MATCHER_FUNCTION_TABLE* table)
 	const char* firstWord = table->GetFirstWord(context);
 	const int wordCount = table->GetWordCount(context);
 	std::unique_ptr<Match> result(new Match());
-	for (const auto& workspace : gWorkspaces) {
+	for (size_t workspaceIndex = 0; workspaceIndex < gWorkspaces.size(); ++workspaceIndex) {
+		const auto& workspace = gWorkspaces[workspaceIndex];
 		if (!workspace.trigger.empty() && (!firstWord || workspace.trigger != firstWord)) continue;
 		const int offset = workspace.trigger.empty() ? 0 : 1;
 		int found = 0;
 		// ワークスペースごとの上限まで候補を収集する。
 		for (int index = 0; index < static_cast<int>(gEntries.size()) && found < workspace.limit; ++index) {
 			const Entry& entry = gEntries[index];
-			if (entry.command != &workspace.command) continue;
+			if (entry.rootId >= gRoots.size() || gRoots[entry.rootId].workspaceIndex != workspaceIndex) continue;
 
-			int level = table->Match(context, entry.name.c_str(), offset);
+			const std::string_view matchName = gStrings.GetUtf8(entry.nameId);
+			int level = table->Match(context, matchName.data(), offset);
 			if (level == -1) continue;
 
 			// 検索発動ワードが設定されている場合は前方一致扱い
@@ -936,7 +1019,8 @@ void FinalizeApi()
 {
 	if (gIndexThread.joinable()) gIndexThread.join();
 	std::lock_guard<std::mutex> lock(gMutex);
-	gEntries.clear(); gWorkspaces.clear(); gFunctions = LAUNCHER_FUNCTION_TABLE();
+	gEntries.clear(); gRoots.clear(); gWorkspaces.clear(); gStrings = StringPool();
+	gFunctions = LAUNCHER_FUNCTION_TABLE();
 	gReady = false; gInitialized = false;
 }
 
@@ -976,10 +1060,24 @@ extern "C" int LNCRPLUGIN_API LNCRPLUGIN_Bind(int version, LNCRPLUGIN_EXPORTTABL
 	};
 	table->CloseHandle = [](LNCRPLUGINMATCHHANDLE handle) { delete static_cast<Match*>(handle); };
 	table->GetName = [](LNCRPLUGINMATCHHANDLE handle, int index, char* buffer, size_t length) {
-		const Entry* entry = nullptr; return GetEntry(handle, index, entry) ? CopyString(entry->name, buffer, length) : -1;
+		const Entry* entry = nullptr;
+		EntryId entryId = InvalidEntryId;
+		if (!GetEntry(handle, index, entry, &entryId)) return -1;
+		const Workspace* workspace = GetWorkspace(*entry);
+		if (!workspace) return -1;
+		const auto relativePath = ToUtf8(BuildRelativePath(entryId, gEntries, gStrings).wstring());
+		if (relativePath.empty()) return -1;
+		const std::string name = workspace->trigger.empty() ? relativePath : workspace->trigger + " " + relativePath;
+		return CopyString(name, buffer, length);
 	};
 	table->GetDescription = [](LNCRPLUGINMATCHHANDLE handle, int index, char* buffer, size_t length) {
-		const Entry* entry = nullptr; return GetEntry(handle, index, entry) ? CopyString(entry->path, buffer, length) : -1;
+		const Entry* entry = nullptr;
+		EntryId entryId = InvalidEntryId;
+		if (!GetEntry(handle, index, entry, &entryId)) return -1;
+		UNREFERENCED_PARAMETER(entry);
+		const auto path = BuildFullPath(entryId, gEntries, gRoots, gStrings);
+		if (path.empty()) return -1;
+		return CopyString(ToUtf8(path.wstring()), buffer, length);
 	};
 	table->GetGuide = [](LNCRPLUGINMATCHHANDLE handle, int index, unsigned int modifier, char* buffer, size_t length) {
 		const Entry* entry = nullptr;
@@ -987,7 +1085,7 @@ extern "C" int LNCRPLUGIN_API LNCRPLUGIN_Bind(int version, LNCRPLUGIN_EXPORTTABL
 		if (modifier == 0) {
 			return CopyString("Open workspace item", buffer, length);
 		}
-		if (modifier == MOD_CONTROL && !entry->directory) {
+		if (modifier == MOD_CONTROL && !entry->isDirectory) {
 			return CopyString("Open containing folder", buffer, length);
 		}
 		return -1;
@@ -997,7 +1095,8 @@ extern "C" int LNCRPLUGIN_API LNCRPLUGIN_Bind(int version, LNCRPLUGIN_EXPORTTABL
 	};
 	// 実行可否と実行処理、エラー情報、アイコン取得処理を登録する。
 	table->CanExecute = [](LNCRPLUGINMATCHHANDLE handle, int index) {
-		const Entry* entry = nullptr; return GetEntry(handle, index, entry) && entry->command ? 1 : 0;
+		const Entry* entry = nullptr;
+		return GetEntry(handle, index, entry) && GetWorkspace(*entry) ? 1 : 0;
 	};
 	table->Execute = &Execute;
 	table->GetErrorString = [](LNCRPLUGINMATCHHANDLE handle, int index, char* buffer, size_t length) {

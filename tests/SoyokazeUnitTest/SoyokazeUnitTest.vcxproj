@@ -35,6 +35,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\testcode\soyokaze\workspace-plugin\WorkspaceIndexTest.cpp">
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\plugins\workspace-plugin;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
     <ClCompile Include="..\testcode\python_modules\key\VKScannerTest.cpp" />
     <ClCompile Include="..\testcode\launcher_proxy\NormalPriviledgeRequestBufferTest.cpp">
       <AdditionalIncludeDirectories>$(ProjectDir)..\..\src\launcher_proxy;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
